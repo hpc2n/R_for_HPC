@@ -235,7 +235,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##   7.144   0.868   8.041</pre>
+##   6.992   0.602   7.637</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-1">
 
@@ -315,51 +315,53 @@ Rprof(NULL)</pre>
 
 <pre >## $by.self
 ##         self.time self.pct total.time total.pct
-## &quot;sim&quot;        3.84    37.87      10.14    100.00
-## &quot;runif&quot;      3.38    33.33       3.44     33.93
-## &quot;pow2&quot;       2.50    24.65       2.76     27.22
-## &quot;sqrt&quot;       0.20     1.97       0.20      1.97
-## &quot;+&quot;          0.08     0.79       0.08      0.79
-## &quot;-&quot;          0.06     0.59       0.06      0.59
-## &quot;*&quot;          0.06     0.59       0.06      0.59
-## &quot;&lt;=&quot;         0.02     0.20       0.02      0.20
+## &quot;runif&quot;      3.40    36.48       3.42     36.70
+## &quot;sim&quot;        3.30    35.41       9.32    100.00
+## &quot;pow2&quot;       2.12    22.75       2.40     25.75
+## &quot;sqrt&quot;       0.20     2.15       0.20      2.15
+## &quot;+&quot;          0.10     1.07       0.10      1.07
+## &quot;&lt;=&quot;         0.08     0.86       0.08      0.86
+## &quot;*&quot;          0.06     0.64       0.06      0.64
+## &quot;/&quot;          0.04     0.43       0.04      0.43
+## &quot;-&quot;          0.02     0.21       0.02      0.21
 ## 
 ## $by.total
 ##                       total.time total.pct self.time self.pct
-## &quot;sim&quot;                      10.14    100.00      3.84    37.87
-## &quot;&lt;Anonymous&gt;&quot;              10.14    100.00      0.00     0.00
-## &quot;block_exec&quot;               10.14    100.00      0.00     0.00
-## &quot;call_block&quot;               10.14    100.00      0.00     0.00
-## &quot;eval&quot;                     10.14    100.00      0.00     0.00
-## &quot;evaluate&quot;                 10.14    100.00      0.00     0.00
-## &quot;evaluate_call&quot;            10.14    100.00      0.00     0.00
-## &quot;FUN&quot;                      10.14    100.00      0.00     0.00
-## &quot;handle&quot;                   10.14    100.00      0.00     0.00
-## &quot;in_dir&quot;                   10.14    100.00      0.00     0.00
-## &quot;lapply&quot;                   10.14    100.00      0.00     0.00
-## &quot;process_file&quot;             10.14    100.00      0.00     0.00
-## &quot;process_group&quot;            10.14    100.00      0.00     0.00
-## &quot;process_group.block&quot;      10.14    100.00      0.00     0.00
-## &quot;render&quot;                   10.14    100.00      0.00     0.00
-## &quot;render_one&quot;               10.14    100.00      0.00     0.00
-## &quot;sapply&quot;                   10.14    100.00      0.00     0.00
-## &quot;suppressMessages&quot;         10.14    100.00      0.00     0.00
-## &quot;timing_fn&quot;                10.14    100.00      0.00     0.00
-## &quot;withCallingHandlers&quot;      10.14    100.00      0.00     0.00
-## &quot;withVisible&quot;              10.14    100.00      0.00     0.00
-## &quot;runif&quot;                     3.44     33.93      3.38    33.33
-## &quot;pow2&quot;                      2.76     27.22      2.50    24.65
-## &quot;sqrt&quot;                      0.20      1.97      0.20     1.97
-## &quot;+&quot;                         0.08      0.79      0.08     0.79
-## &quot;-&quot;                         0.06      0.59      0.06     0.59
-## &quot;*&quot;                         0.06      0.59      0.06     0.59
-## &quot;&lt;=&quot;                        0.02      0.20      0.02     0.20
+## &quot;sim&quot;                       9.32    100.00      3.30    35.41
+## &quot;&lt;Anonymous&gt;&quot;               9.32    100.00      0.00     0.00
+## &quot;block_exec&quot;                9.32    100.00      0.00     0.00
+## &quot;call_block&quot;                9.32    100.00      0.00     0.00
+## &quot;eval&quot;                      9.32    100.00      0.00     0.00
+## &quot;evaluate&quot;                  9.32    100.00      0.00     0.00
+## &quot;evaluate_call&quot;             9.32    100.00      0.00     0.00
+## &quot;FUN&quot;                       9.32    100.00      0.00     0.00
+## &quot;handle&quot;                    9.32    100.00      0.00     0.00
+## &quot;in_dir&quot;                    9.32    100.00      0.00     0.00
+## &quot;lapply&quot;                    9.32    100.00      0.00     0.00
+## &quot;process_file&quot;              9.32    100.00      0.00     0.00
+## &quot;process_group&quot;             9.32    100.00      0.00     0.00
+## &quot;process_group.block&quot;       9.32    100.00      0.00     0.00
+## &quot;render&quot;                    9.32    100.00      0.00     0.00
+## &quot;render_one&quot;                9.32    100.00      0.00     0.00
+## &quot;sapply&quot;                    9.32    100.00      0.00     0.00
+## &quot;suppressMessages&quot;          9.32    100.00      0.00     0.00
+## &quot;timing_fn&quot;                 9.32    100.00      0.00     0.00
+## &quot;withCallingHandlers&quot;       9.32    100.00      0.00     0.00
+## &quot;withVisible&quot;               9.32    100.00      0.00     0.00
+## &quot;runif&quot;                     3.42     36.70      3.40    36.48
+## &quot;pow2&quot;                      2.40     25.75      2.12    22.75
+## &quot;sqrt&quot;                      0.20      2.15      0.20     2.15
+## &quot;+&quot;                         0.10      1.07      0.10     1.07
+## &quot;&lt;=&quot;                        0.08      0.86      0.08     0.86
+## &quot;*&quot;                         0.06      0.64      0.06     0.64
+## &quot;/&quot;                         0.04      0.43      0.04     0.43
+## &quot;-&quot;                         0.02      0.21      0.02     0.21
 ## 
 ## $sample.interval
 ## [1] 0.02
 ## 
 ## $sampling.time
-## [1] 10.14</pre>
+## [1] 9.32</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-3">
 
