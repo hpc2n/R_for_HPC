@@ -1,349 +1,428 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
+  <title>Profiling your code</title>
 
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-
-
-
-
-<title>Profiling</title>
-
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
-
-
-
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
 
 
 
 
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
+  <base target="_blank">
 
-<style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
-}
-</style>
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Profiling your code',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: 'Profiling_files/logo.png',
+              },
 
-<script>
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
+      // Author information
+      presenters: [
+            {
+        name:  'Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-});
-</script>
+  <style type="text/css">
 
-<!-- tabsets -->
+    b, strong {
+      font-weight: bold;
+    }
 
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
+    em {
+      font-style: italic;
+    }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
+    summary {
+      display: list-item;
+    }
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
   display: block;
 }
 
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-  background-color: transparent;
-}
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            div.sourceCode { overflow-x: auto; }
+    table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+      margin: 0; padding: 0; vertical-align: baseline; border: none; }
+    table.sourceCode { width: 100%; line-height: 100%; }
+    td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+    td.sourceCode { padding-left: 5px; }
+    code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code > span.dt { color: #902000; } /* DataType */
+    code > span.dv { color: #40a070; } /* DecVal */
+    code > span.bn { color: #40a070; } /* BaseN */
+    code > span.fl { color: #40a070; } /* Float */
+    code > span.ch { color: #4070a0; } /* Char */
+    code > span.st { color: #4070a0; } /* String */
+    code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code > span.ot { color: #007020; } /* Other */
+    code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code > span.fu { color: #06287e; } /* Function */
+    code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    code > span.cn { color: #880000; } /* Constant */
+    code > span.sc { color: #4070a0; } /* SpecialChar */
+    code > span.vs { color: #4070a0; } /* VerbatimString */
+    code > span.ss { color: #bb6688; } /* SpecialString */
+    code > span.im { } /* Import */
+    code > span.va { color: #19177c; } /* Variable */
+    code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code > span.op { color: #666666; } /* Operator */
+    code > span.bu { } /* BuiltIn */
+    code > span.ex { } /* Extension */
+    code > span.pp { color: #bc7a00; } /* Preprocessor */
+    code > span.at { color: #7d9029; } /* Attribute */
+    code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+        
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(Profiling_files/logo.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
+  </style>
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
-<!-- code folding -->
-
-
-
+  <link rel="stylesheet" href="custom.css" type="text/css" />
 
 </head>
 
-<body>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="Profiling_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">May 27th, 2020</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Profiling</h2></hgroup><article  id="profiling">
+
+<ul>
+<li>summary of the times spent in different function calls</li>
+<li>memory usage report</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Pi calculation</h2></hgroup><article  id="pi-calculation">
+
+<img width="100px" src='MC1.png' title='fig:'/>
+
+<p>\(\textrm{Surface circle} = \left ( \frac{\textrm{Surface circle}}{\textrm{Surface square}} \right ) * (\textrm{Surface square})\)</p>
+
+<p>is always valid. Knowing that \(\textrm{Surface circle} = \pi * r^2\), \(\pi\) can be computed as:</p>
+
+<p>\(\pi = \frac{1}{r^2} \left ( \frac{\textrm{Surface circle}}{\textrm{Surface square}} \right ) * (\textrm{Surface square})\)</p>
+
+<p>the ratio in parentheses is approximated with a Monte Carlo process throwing random points</p>
+
+</article></slide><slide class=""><hgroup><h2>Pi calculation</h2></hgroup><article  id="pi-calculation-1">
+
+<div style="float: left; width: 50%;">
+<img width="250px" src='MC2.png' title='fig:'/><p class='caption'>Surface ratio</p>
+
+<ul>
+<li>The R function to compute Pi is:</li>
+</ul></div>
+
+<div style="float: right; width: 50%;">
+<pre class = 'prettyprint lang-r'>sim &lt;- function(l) {
+ c &lt;- rep(0,l)
+ hits &lt;- 0
+ pow2 &lt;- function(x) {
+   x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] )
+   return(x2)
+ }
+ for(i in 1:l){
+   x = runif(2,-1,1)
+   if( pow2(x) &lt;=1 ){
+     hits &lt;- hits + 1
+   }
+   dens &lt;- hits/i
+   pi_partial = dens*4
+   c[i] = pi_partial
+ }
+ return(c)
+}</pre></div>
+
+</article></slide><slide class=""><hgroup><h2>Pi calculation</h2></hgroup><article  id="pi-calculation-2">
+
+<p>The accuracy of the calculation increases with the number of iterations</p>
+
+<pre class = 'prettyprint lang-r'>size &lt;- 100000
+res &lt;- sim(size)
+plot(res[1:size],type=&#39;l&#39;, xlab=&quot;Nr. iterations&quot;, ylab=&quot;Pi&quot;)
+lines(rep(pi,size)[1:size], col = &#39;red&#39;)</pre>
+
+<p><img src="Profiling_files/figure-html/unnamed-chunk-2-1.png" width="480" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time">
+
+<h3>System.time</h3>
+
+<p>This function is included in R by default</p>
+
+<pre class = 'prettyprint lang-r'>size &lt;- 500000
+system.time(
+ res &lt;- sim(size)
+)</pre>
+
+<pre >##    user  system elapsed 
+##   7.104   0.612   7.744</pre>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-1">
+
+<h3>Tic toc</h3>
+
+<p>Another way to obtain execution times is by using the tictoc package:</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;tictoc&quot;)</pre>
+
+<p>one can nest tic and toc calls and save the outputs to a log file:</p>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-2">
+
+<h3>Tic toc</h3>
+
+<pre class = 'prettyprint lang-r'>library(&quot;tictoc&quot;)
+size &lt;- 1000000
+sim2 &lt;- function(l) {
+   c &lt;- rep(0,l)
+   hits &lt;- 0
+   pow2 &lt;- function(x) { x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] );  return(x2) }
+   tic(&quot;only for-loop&quot;)
+   for(i in 1:l){
+      x = runif(2,-1,1)
+      if( pow2(x) &lt;=1 ){ hits &lt;- hits + 1 }
+      dens &lt;- hits/i; pi_partial = dens*4; c[i] = pi_partial
+   }
+   toc(log = TRUE)
+   return(c)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-3">
+
+<h3>Tic toc</h3>
+
+<pre class = 'prettyprint lang-r'>tic(&quot;Total execution time&quot;)
+    res &lt;- sim2(size)
+toc(log = TRUE)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-4">
+
+<h3>Tic toc</h3>
+
+<pre class = 'prettyprint lang-r'>tic.log()
+tic.clearlog()</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof">
+
+<p>Rprof should be present in your R installation. For a graphical analysis, we will use <em>proftools</em> package. One needs to install this package in case it is not already installed. For R versions &lt; 3.5 the instructions are:</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;proftools&quot;)
+source(&quot;http://bioconductor.org/biocLite.R&quot;)
+biocLite(c(&quot;graph&quot;,&quot;Rgraphviz&quot;))</pre>
+
+<p>while for R &gt; 3.5 one needs to do</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;proftools&quot;)
+if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))
+  install.packages(&quot;BiocManager&quot;)
+BiocManager::install()
+BiocManager::install(c(&quot;graph&quot;,&quot;Rgraphviz&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-1">
+
+<p>the profiling is performed with the following lines:</p>
+
+<pre class = 'prettyprint lang-r'>size &lt;- 500000
+Rprof(&quot;Rprof.out&quot;)
+res &lt;- sim(size)
+Rprof(NULL)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-2">
+
+<p>the profiling is performed with the following lines:</p>
+
+<pre class = 'prettyprint lang-r'>summaryRprof(&quot;Rprof.out&quot;) </pre>
+
+<pre >## $by.self
+##         self.time self.pct total.time total.pct
+## &quot;runif&quot;      3.52    35.06       3.56     35.46
+## &quot;sim&quot;        3.44    34.26      10.04    100.00
+## &quot;pow2&quot;       2.60    25.90       2.78     27.69
+## &quot;sqrt&quot;       0.14     1.39       0.14      1.39
+## &quot;&lt;=&quot;         0.12     1.20       0.12      1.20
+## &quot;*&quot;          0.10     1.00       0.10      1.00
+## &quot;+&quot;          0.06     0.60       0.06      0.60
+## &quot;-&quot;          0.04     0.40       0.04      0.40
+## &quot;/&quot;          0.02     0.20       0.02      0.20
+## 
+## $by.total
+##                       total.time total.pct self.time self.pct
+## &quot;sim&quot;                      10.04    100.00      3.44    34.26
+## &quot;&lt;Anonymous&gt;&quot;              10.04    100.00      0.00     0.00
+## &quot;block_exec&quot;               10.04    100.00      0.00     0.00
+## &quot;call_block&quot;               10.04    100.00      0.00     0.00
+## &quot;eval&quot;                     10.04    100.00      0.00     0.00
+## &quot;evaluate&quot;                 10.04    100.00      0.00     0.00
+## &quot;evaluate_call&quot;            10.04    100.00      0.00     0.00
+## &quot;FUN&quot;                      10.04    100.00      0.00     0.00
+## &quot;handle&quot;                   10.04    100.00      0.00     0.00
+## &quot;in_dir&quot;                   10.04    100.00      0.00     0.00
+## &quot;lapply&quot;                   10.04    100.00      0.00     0.00
+## &quot;process_file&quot;             10.04    100.00      0.00     0.00
+## &quot;process_group&quot;            10.04    100.00      0.00     0.00
+## &quot;process_group.block&quot;      10.04    100.00      0.00     0.00
+## &quot;render&quot;                   10.04    100.00      0.00     0.00
+## &quot;render_one&quot;               10.04    100.00      0.00     0.00
+## &quot;sapply&quot;                   10.04    100.00      0.00     0.00
+## &quot;suppressMessages&quot;         10.04    100.00      0.00     0.00
+## &quot;timing_fn&quot;                10.04    100.00      0.00     0.00
+## &quot;withCallingHandlers&quot;      10.04    100.00      0.00     0.00
+## &quot;withVisible&quot;              10.04    100.00      0.00     0.00
+## &quot;runif&quot;                     3.56     35.46      3.52    35.06
+## &quot;pow2&quot;                      2.78     27.69      2.60    25.90
+## &quot;sqrt&quot;                      0.14      1.39      0.14     1.39
+## &quot;&lt;=&quot;                        0.12      1.20      0.12     1.20
+## &quot;*&quot;                         0.10      1.00      0.10     1.00
+## &quot;+&quot;                         0.06      0.60      0.06     0.60
+## &quot;-&quot;                         0.04      0.40      0.04     0.40
+## &quot;/&quot;                         0.02      0.20      0.02     0.20
+## 
+## $sample.interval
+## [1] 0.02
+## 
+## $sampling.time
+## [1] 10.04</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-3">
+
+<p>here you can see that the functions <em>runif</em> and <em>pow2</em> are the most expensive parts in our code. A graphical output can be obtained through the <em>proftools</em> package:</p>
+
+<pre class = 'prettyprint lang-r'>library(proftools)
+p &lt;- readProfileData(filename = &quot;Rprof.out&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-4">
+
+<pre class = 'prettyprint lang-r'>plotProfileCallGraph(p, style=google.style, score=&quot;total&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Rbenchmark</h2></hgroup><article  id="rbenchmark">
+
+<p>One most probably needs to install this package as it is not included by default in R installations:</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;rbenchmark&quot;)</pre>
+
+<p>then we can benchmark our function <em>sim()</em></p>
+
+<pre class = 'prettyprint lang-r'>library(rbenchmark)
+size &lt;- 500000
+bench &lt;- benchmark(sim(size), replications=10)
+bench </pre>
+
+</article></slide><slide class=""><hgroup><h2>Rbenchmark</h2></hgroup><article  id="rbenchmark-1">
+
+<pre class = 'prettyprint lang-r'>bench </pre>
+
+<p>the elapsed time is an average over the 10 replications we especified in the benchmark function.</p>
+
+</article></slide><slide class=""><hgroup><h2>Microbenchmark</h2></hgroup><article  id="microbenchmark">
+
+<p>If this package is not installed, do as usual:</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;microbenchmark&quot;)</pre>
+
+<p>and do the benchmarking with:</p>
+
+<pre class = 'prettyprint lang-r'>library(microbenchmark)
+bench2 &lt;- microbenchmark(sim(size), times=10)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Microbenchmark</h2></hgroup><article  id="microbenchmark-1">
+
+<pre class = 'prettyprint lang-r'>bench2 </pre>
+
+<p>in this case we obtain more statistics of the benchmarking process like the <em>mean</em>, <em>min</em>, <em>max</em>, &#8230;</p>
+
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
+
+<ul>
+<li><a href='https://swcarpentry.github.io/r-novice-inflammation/' title=''>https://swcarpentry.github.io/r-novice-inflammation/</a></li>
+<li><a href='https://www.tutorialspoint.com/r/index.htm' title=''>https://www.tutorialspoint.com/r/index.htm</a></li>
+<li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
+<li><a href='https://www.r-bloggers.com/estimation-of-the-number-pi-a-monte-carlo-simulation/' title=''>Pi calculation</a></li>
+</ul></article></slide>
 
 
-<div class="container-fluid main-container">
+  <slide class="backdrop"></slide>
 
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="about.html">About</a>
-</li>
-<li>
-  <a href="Profiling.html">Profiling</a>
-</li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
-
-<div class="fluid-row" id="header">
-
-
-
-<h1 class="title toc-ignore">Profiling</h1>
-
-</div>
-
-
-<p>More about profiling.</p>
-
-
-
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
+</slides>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
@@ -352,6 +431,20 @@ $(document).ready(function () {
     script.type = "text/javascript";
     script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
   })();
 </script>
 

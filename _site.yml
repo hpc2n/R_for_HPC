@@ -9,3 +9,7 @@ navbar:
       href: about.html
     - text: "Profiling"
       href: Profiling.html
+output:
+  html_document:
+    theme: united
+    highlight: textmate
