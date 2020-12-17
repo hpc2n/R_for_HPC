@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.52    0.00    0.62</pre>
+##    0.55    0.00    0.75</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.02    0.00    0.02</pre>
+##    0.02    0.00    0.01</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   13.12    0.09   13.53</pre>
+##   12.84    0.28   13.47</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.62    0.00    0.62</pre>
+##     0.6     0.0     0.6</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -212,7 +212,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.08    0.04    0.12</pre>
+##    0.10    0.01    0.11</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
 
@@ -221,7 +221,7 @@ dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.05    0.00    0.05</pre>
+##    0.03    0.00    0.03</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -238,12 +238,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    4.33    0.03    4.37</pre>
+##    4.27    0.03    4.33</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.26    0.07    2.36</pre>
+##    2.29    0.04    2.36</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -281,11 +281,11 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 
 <pre >## Unit: milliseconds
 ##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 291.0577 316.4991 325.1319 322.1775 328.1633  401.1085   100
-##  sim.comp0(size) 849.3398 868.3363 886.6714 881.9253 896.5020 1029.5112   100
-##  sim.comp1(size) 387.3174 409.0140 419.8925 416.1044 424.2475  565.7646   100
-##  sim.comp2(size) 301.2338 314.4177 322.0128 320.0204 326.7867  365.4081   100
-##  sim.comp3(size) 296.5905 311.5005 319.7005 317.1386 324.8915  402.4483   100</pre>
+##        sim(size) 299.7324 314.5628 341.5292 324.2422 340.4423  592.6272   100
+##  sim.comp0(size) 849.6985 870.0995 914.0372 882.1523 923.2930 1339.0606   100
+##  sim.comp1(size) 395.7371 408.2817 442.8865 418.4188 436.2277  835.3693   100
+##  sim.comp2(size) 298.5652 313.2735 344.2663 322.8684 342.5759  754.6764   100
+##  sim.comp3(size) 295.0734 308.9535 333.6109 316.3514 336.6708  565.6129   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -307,8 +307,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr      min       lq     mean   median     uq     max neval
-##  sim(size) 298.0728 313.0756 319.5158 320.0049 324.48 381.007   100</pre>
+##       expr      min       lq    mean  median       uq      max neval
+##  sim(size) 305.3421 321.6235 332.461 327.096 335.1596 436.2222   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
 

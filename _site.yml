@@ -1,7 +1,7 @@
 name: "my-website"
 output_dir: "."
 navbar:
-  title: "R for HPC"
+  title: "HPC2N"
   left:
     - text: "Home"
       href: index.html
@@ -11,6 +11,6 @@ navbar:
       href: Optimizing.html
 output:
   html_document:
-    theme: united
+    theme: sandstone
     highlight: textmate
-    logo: "Images/logo.png"
+    logo: Images/logo.png
