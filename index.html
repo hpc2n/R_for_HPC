@@ -11,7 +11,7 @@
 
 
 
-<title>My Website</title>
+<title>R for High Performance Computing</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,17 +22,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -291,6 +280,9 @@ $(document).ready(function () {
 <li>
   <a href="Profiling.html">Profiling</a>
 </li>
+<li>
+  <a href="Optimizing.html">Optimizing</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -303,12 +295,13 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">My Website</h1>
+<h1 class="title toc-ignore">R for High Performance Computing</h1>
 
 </div>
 
 
-<p>Hello, Website!</p>
+<p>There is interest among R users to get started in High Performance Computing (HPC) as they need more CPU power, memory or both. Because most of the Machine Learning (ML) models in R are computationally demanding, they are a good starting point to introduce HPC concepts. In the present course, you will learn how to improve your code so that it could run more efficiently on a Desktop and also on a HPC environment. As realistic ML models are computationally expensive when running on a Desktop, we will also teach you how to run these models on Kebnekaise, a HPC cluster at our center. The focus of the course will not be about ML though.</p>
+<p>This one-day, online course will have lectures interspersed with some hands-on sessions where you get to try out what you have just learned.</p>
 
 
 
@@ -319,7 +312,7 @@ $(document).ready(function () {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

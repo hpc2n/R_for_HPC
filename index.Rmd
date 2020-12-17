@@ -1,5 +1,7 @@
 ---
-title: "My Website"
+title: "R for High Performance Computing"
 ---
 
-Hello, Website!
+There is interest among R users to get started in High Performance Computing (HPC) as they need more CPU power, memory or both. Because most of the Machine Learning (ML) models in R are computationally demanding, they are a good starting point to introduce HPC concepts. In the present course, you will learn how to improve your code so that it could run more efficiently on a Desktop and also on a HPC environment. As realistic ML models are computationally expensive when running on a Desktop, we will also teach you how to run these models on Kebnekaise, a HPC cluster at our center. The focus of the course will not be about ML though.
+
+This one-day, online course will have lectures interspersed with some hands-on sessions where you get to try out what you have just learned.

@@ -1,0 +1,306 @@
+---
+title: "Optimizing your code"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+date: "May 27th, 2020"
+output: 
+    ioslides_presentation:
+       widescreen: true
+       css: custom.css
+       logo: logo.png
+---
+
+## Performance improvement 
+
+There are some tricks you can follow in order to get a faster code, we will use our Pi function from the previous topic:
+
+```{r}
+sim <- function(l) {
+  c <- rep(0,l); hits <- 0
+  pow2 <- function(x) { x2 <- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+             x = runif(2,-1,1)
+     if( pow2(x) <=1 ){
+                  hits <- hits + 1
+        }
+        dens <- hits/i; pi_partial = dens*4; c[i] = pi_partial
+    }
+   return(c)
+}
+```
+
+## Performance improvement
+
+the execution time of this function for 100,000 iterations is
+
+```{r}
+size <- 100000
+system.time(
+   res <- sim(size)
+)
+```
+
+## Vectorization
+
+If we vectorize the code we obtain a better performance:
+
+```{r}
+simv <- function(l) {
+  set.seed(0.234234)
+  x=runif(l); y=runif(l)
+  z=sqrt(x^2 + y^2)
+  resl <- length(which(z<=1))*4/length(z)
+  return(resl)
+}
+```
+
+## Vectorization
+```{r}
+size <- 100000
+system.time(
+  res <- simv(size)
+)
+```
+
+a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.
+
+Common vector operations: $+$, $-$, $/$, $*$, $\% * \%$.
+
+## Memory pre-allocation
+
+```{r}
+N <- 1E5
+data1 <- 1 
+system.time({
+    for (j in 2:N) {
+      data1 <- c(data1, data1[j-1] + sample(-5:5, size=1))
+    }
+  })
+```
+
+## Memory pre-allocation
+
+```{r}
+data2 <- numeric(N)
+data2[1] <- 1
+system.time({
+  for (j in 2:N) {
+    data2[j] <- data2[j-1] + sample(-5:5, size=1)
+  }
+})
+```
+This example shows that pre-allocating memory reduces the execution time.
+
+## Using Data Frames
+
+```{r}
+data1 <- rnorm(1E4*1000)
+dataf <- data.frame(data1)
+system.time(data2 <- rowSums(dataf))
+```
+
+## Using Data Frames
+
+```{r}
+data1 <- rnorm(1E4*1000)
+dim(data1) <- c(1E4,1000)
+system.time(data1 <- rowSums(data1))
+```
+
+
+
+Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames. 
+
+
+## Different implementations of functions
+
+Principal components analysis
+
+![J. Chem. Inf. Mod., 57, 826-834 (2017)](pca_analysis.png){width=500px}
+
+## Different implementations of functions
+
+```{r}
+data <- rnorm(1E5*100)
+dim(data) <- c(1E5,100)
+system.time(prcomp_data <- prcomp(data))
+system.time(princomp_data <- princomp(data))
+```
+
+## Compiling your functions
+
+```{r eval=TRUE}
+library(microbenchmark)
+library(compiler)
+
+sim <- function(l) {
+  c <- rep(0,l); hits <- 0
+  pow2 <- function(x) { x2 <- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+             x = runif(2,-1,1)
+     if( pow2(x) <=1 ){
+                  hits <- hits + 1
+        }
+        dens <- hits/i; pi_partial = dens*4; c[i] = pi_partial
+         }
+   
+   return(c)
+}
+```
+
+## Compiling your functions
+
+```{r eval=TRUE}
+sim.comp0 <- cmpfun(sim, options=list(optimize=0))
+sim.comp1 <- cmpfun(sim, options=list(optimize=1))
+sim.comp2 <- cmpfun(sim, options=list(optimize=2))
+sim.comp3 <- cmpfun(sim, options=list(optimize=3))
+
+size <- 100000
+bench <- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp2(size), 
+                        sim.comp3(size))
+```
+
+## Compiling your functions
+
+```{r eval=TRUE}
+bench
+```
+
+## Compiling your functions
+
+visualize the results:
+
+```{r eval=FALSE}
+library(ggplot2)
+autoplot(bench)
+```
+
+![Violin Plot](violin.png){width=450px}
+
+## Just in time compilation
+
+```{r eval=TRUE}
+library(compiler)
+enableJIT(level=3)
+
+bench <- microbenchmark(sim(size))
+bench
+```
+
+
+## Advanced Topics (Kebnekaise): 
+
+### Calling external functions
+
+```{r eval=FALSE}
+subroutine pifunc(n)
+implicit none
+integer, parameter :: seed = 86456
+integer     :: i,n,hits
+real        :: x,y,r,pival
+call srand(seed)
+hits = 0
+do i=1,n
+   x = rand()
+   y = rand()
+   r = sqrt(x*x + y*y)
+   if(r <= 1) then 
+       hits = hits + 1
+   endif
+enddo
+pival = 4.0d0*hits/(1.0*n)
+write(6,*) pival,n
+end subroutine pifunc
+```
+
+## Advanced Topics (Kebnekaise): 
+
+### Calling external functions
+
+One compiles the function using standard compilers (Linux, Kebnekaise):
+
+```{r eval=FALSE}
+gfortran -shared -fPIC -o picalc pi.f90
+```
+
+```{r eval=FALSE, echo=TRUE}
+size <- 100000
+
+dyn.load("pi.so")
+is.loaded("pifunc")
+.Fortran("pifunc", n = as.integer(size))
+```
+
+
+
+## Advanced Topics (Kebnekaise):
+
+### Calling external functions
+
+now we can benchmark our functions:
+
+```{r eval=FALSE}
+library(microbenchmark)
+bench <- microbenchmark(sim(size), .Fortran("pifunc", n = as.integer(size)))
+bench
+```
+
+## Advanced Topics (Kebnekaise):
+### BLAS/LAPACK libraries
+
+On Kebnekaise the OpenBLAS libraries are available:
+
+```{r eval=FALSE}
+sessionInfo()
+
+R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.6 LTS
+
+Matrix products: default
+BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so
+```
+
+## Advanced Topics (Kebnekaise):
+### BLAS/LAPACK libraries
+
+The number of threads can be controlled with the *RhpcBLASctl* package and setting the number of threads:
+
+```{r eval=FALSE}
+library(RhpcBLASctl)
+n <- 5000; nsim <- 3                 #matrix size nxn; nr. independent simulations
+set.seed(123); summa <- 0; x <- 0; blas_set_num_threads(1)  #set the number of threads
+for (i in 1:nsim) {
+  m <- matrix(rnorm(n^2), n); a <- crossprod(m)   #random matrix and symmetrize it
+  timing <- system.time({
+    x <- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3] ;  summa <- summa + timing
+} ; times <- summa/nsim
+cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
+```
+
+## Advanced Topics (Kebnekaise):
+### BLAS/LAPACK libraries
+
+```{r eval=FALSE}
+### Using 2 threads
+blas_set_num_threads(2)         #set the number of threads
+set.seed(123); summa <- 0; x <- 0              #partial values
+for (i in 1:nsim) {
+  m <- matrix(rnorm(n^2), n)    #random matrix
+  a <- crossprod(m)             #symmetrize the random matrix
+  timing <- system.time({
+    x <- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3]
+  summa <- summa + timing
+}
+times <- summa/nsim
+cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
+```
+
+
+## References
+* R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
+* http://adv-r.had.co.nz/Profiling.html#vectorise
+* http://adv-r.had.co.nz/Functionals.html#functionals
+* [Pi vectorization](https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/)

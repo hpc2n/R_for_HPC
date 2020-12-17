@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Optimizing your code</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Optimizing your code',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: 'Optimizing_files/logo.png',
+              },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(Optimizing_files/logo.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
+  </style>
+
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="Optimizing_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">May 27th, 2020</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Performance improvement</h2></hgroup><article  id="performance-improvement">
+
+<p>There are some tricks you can follow in order to get a faster code, we will use our Pi function from the previous topic:</p>
+
+<pre class = 'prettyprint lang-r'>sim &lt;- function(l) {
+  c &lt;- rep(0,l); hits &lt;- 0
+  pow2 &lt;- function(x) { x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+             x = runif(2,-1,1)
+     if( pow2(x) &lt;=1 ){
+                  hits &lt;- hits + 1
+        }
+        dens &lt;- hits/i; pi_partial = dens*4; c[i] = pi_partial
+    }
+   return(c)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Performance improvement</h2></hgroup><article  id="performance-improvement-1">
+
+<p>the execution time of this function for 100,000 iterations is</p>
+
+<pre class = 'prettyprint lang-r'>size &lt;- 100000
+system.time(
+   res &lt;- sim(size)
+)</pre>
+
+<pre >##    user  system elapsed 
+##    0.54    0.01    0.78</pre>
+
+</article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
+
+<p>If we vectorize the code we obtain a better performance:</p>
+
+<pre class = 'prettyprint lang-r'>simv &lt;- function(l) {
+  set.seed(0.234234)
+  x=runif(l); y=runif(l)
+  z=sqrt(x^2 + y^2)
+  resl &lt;- length(which(z&lt;=1))*4/length(z)
+  return(resl)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization-1">
+
+<pre class = 'prettyprint lang-r'>size &lt;- 100000
+system.time(
+  res &lt;- simv(size)
+)</pre>
+
+<pre >##    user  system elapsed 
+##    0.03    0.00    0.03</pre>
+
+<p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
+
+<p>Common vector operations: \(+\), \(-\), \(/\), \(*\), \(\% * \%\).</p>
+
+</article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation">
+
+<pre class = 'prettyprint lang-r'>N &lt;- 1E5
+data1 &lt;- 1 
+system.time({
+    for (j in 2:N) {
+      data1 &lt;- c(data1, data1[j-1] + sample(-5:5, size=1))
+    }
+  })</pre>
+
+<pre >##    user  system elapsed 
+##   12.33    0.31   12.95</pre>
+
+</article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
+
+<pre class = 'prettyprint lang-r'>data2 &lt;- numeric(N)
+data2[1] &lt;- 1
+system.time({
+  for (j in 2:N) {
+    data2[j] &lt;- data2[j-1] + sample(-5:5, size=1)
+  }
+})</pre>
+
+<pre >##    user  system elapsed 
+##    0.61    0.00    0.61</pre>
+
+<p>This example shows that pre-allocating memory reduces the execution time.</p>
+
+</article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames">
+
+<pre class = 'prettyprint lang-r'>data1 &lt;- rnorm(1E4*1000)
+dataf &lt;- data.frame(data1)
+system.time(data2 &lt;- rowSums(dataf))</pre>
+
+<pre >##    user  system elapsed 
+##    0.06    0.04    0.11</pre>
+
+</article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
+
+<pre class = 'prettyprint lang-r'>data1 &lt;- rnorm(1E4*1000)
+dim(data1) &lt;- c(1E4,1000)
+system.time(data1 &lt;- rowSums(data1))</pre>
+
+<pre >##    user  system elapsed 
+##    0.01    0.00    0.02</pre>
+
+<p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
+
+</article></slide><slide class=""><hgroup><h2>Different implementations of functions</h2></hgroup><article  id="different-implementations-of-functions">
+
+<p>Principal components analysis</p>
+
+<img width="500px" src='pca_analysis.png' title='fig:'/><p class='caption'>J. Chem. Inf. Mod., 57, 826-834 (2017)</p>
+
+</article></slide><slide class=""><hgroup><h2>Different implementations of functions</h2></hgroup><article  id="different-implementations-of-functions-1">
+
+<pre class = 'prettyprint lang-r'>data &lt;- rnorm(1E5*100)
+dim(data) &lt;- c(1E5,100)
+system.time(prcomp_data &lt;- prcomp(data))</pre>
+
+<pre >##    user  system elapsed 
+##    4.19    0.04    4.32</pre>
+
+<pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
+
+<pre >##    user  system elapsed 
+##    2.25    0.04    2.33</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
+
+<pre class = 'prettyprint lang-r'>library(microbenchmark)
+library(compiler)
+
+sim &lt;- function(l) {
+  c &lt;- rep(0,l); hits &lt;- 0
+  pow2 &lt;- function(x) { x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+             x = runif(2,-1,1)
+     if( pow2(x) &lt;=1 ){
+                  hits &lt;- hits + 1
+        }
+        dens &lt;- hits/i; pi_partial = dens*4; c[i] = pi_partial
+         }
+   
+   return(c)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-1">
+
+<pre class = 'prettyprint lang-r'>sim.comp0 &lt;- cmpfun(sim, options=list(optimize=0))
+sim.comp1 &lt;- cmpfun(sim, options=list(optimize=1))
+sim.comp2 &lt;- cmpfun(sim, options=list(optimize=2))
+sim.comp3 &lt;- cmpfun(sim, options=list(optimize=3))
+
+size &lt;- 100000
+bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp2(size), 
+                        sim.comp3(size))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-2">
+
+<pre class = 'prettyprint lang-r'>bench</pre>
+
+<pre >## Unit: milliseconds
+##             expr      min       lq     mean   median       uq       max neval
+##        sim(size) 291.2980 303.6392 316.6841 308.8289 314.7131  529.7119   100
+##  sim.comp0(size) 806.0151 836.8863 860.9411 843.8879 857.6576 1132.7756   100
+##  sim.comp1(size) 381.5065 398.0991 411.4340 403.8712 411.2674  555.5687   100
+##  sim.comp2(size) 290.5542 303.4569 314.6629 308.5514 317.3601  403.6267   100
+##  sim.comp3(size) 289.4659 296.6852 307.5448 302.9475 309.1231  482.0393   100</pre>
+
+</article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
+
+<p>visualize the results:</p>
+
+<pre class = 'prettyprint lang-r'>library(ggplot2)
+autoplot(bench)</pre>
+
+<img width="450px" src='violin.png' title='fig:'/><p class='caption'>Violin Plot</p>
+
+</article></slide><slide class=""><hgroup><h2>Just in time compilation</h2></hgroup><article  id="just-in-time-compilation">
+
+<pre class = 'prettyprint lang-r'>library(compiler)
+enableJIT(level=3)</pre>
+
+<pre >## [1] 3</pre>
+
+<pre class = 'prettyprint lang-r'>bench &lt;- microbenchmark(sim(size))
+bench</pre>
+
+<pre >## Unit: milliseconds
+##       expr   min       lq     mean   median       uq      max neval
+##  sim(size) 295.4 302.8573 309.2086 307.1024 311.6901 411.5658   100</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
+
+<h3>Calling external functions</h3>
+
+<pre class = 'prettyprint lang-r'>subroutine pifunc(n)
+implicit none
+integer, parameter :: seed = 86456
+integer     :: i,n,hits
+real        :: x,y,r,pival
+call srand(seed)
+hits = 0
+do i=1,n
+   x = rand()
+   y = rand()
+   r = sqrt(x*x + y*y)
+   if(r &lt;= 1) then 
+       hits = hits + 1
+   endif
+enddo
+pival = 4.0d0*hits/(1.0*n)
+write(6,*) pival,n
+end subroutine pifunc</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-1">
+
+<h3>Calling external functions</h3>
+
+<p>One compiles the function using standard compilers (Linux, Kebnekaise):</p>
+
+<pre class = 'prettyprint lang-r'>gfortran -shared -fPIC -o picalc pi.f90</pre>
+
+<pre class = 'prettyprint lang-r'>size &lt;- 100000
+
+dyn.load(&quot;pi.so&quot;)
+is.loaded(&quot;pifunc&quot;)
+.Fortran(&quot;pifunc&quot;, n = as.integer(size))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-2">
+
+<h3>Calling external functions</h3>
+
+<p>now we can benchmark our functions:</p>
+
+<pre class = 'prettyprint lang-r'>library(microbenchmark)
+bench &lt;- microbenchmark(sim(size), .Fortran(&quot;pifunc&quot;, n = as.integer(size)))
+bench</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-3">
+
+<h3>BLAS/LAPACK libraries</h3>
+
+<p>On Kebnekaise the OpenBLAS libraries are available:</p>
+
+<pre class = 'prettyprint lang-r'>sessionInfo()
+
+R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.6 LTS
+
+Matrix products: default
+BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-4">
+
+<h3>BLAS/LAPACK libraries</h3>
+
+<p>The number of threads can be controlled with the <em>RhpcBLASctl</em> package and setting the number of threads:</p>
+
+<pre class = 'prettyprint lang-r'>library(RhpcBLASctl)
+n &lt;- 5000; nsim &lt;- 3                 #matrix size nxn; nr. independent simulations
+set.seed(123); summa &lt;- 0; x &lt;- 0; blas_set_num_threads(1)  #set the number of threads
+for (i in 1:nsim) {
+  m &lt;- matrix(rnorm(n^2), n); a &lt;- crossprod(m)   #random matrix and symmetrize it
+  timing &lt;- system.time({
+    x &lt;- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3] ;  summa &lt;- summa + timing
+} ; times &lt;- summa/nsim
+cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-5">
+
+<h3>BLAS/LAPACK libraries</h3>
+
+<pre class = 'prettyprint lang-r'>### Using 2 threads
+blas_set_num_threads(2)         #set the number of threads
+set.seed(123); summa &lt;- 0; x &lt;- 0              #partial values
+for (i in 1:nsim) {
+  m &lt;- matrix(rnorm(n^2), n)    #random matrix
+  a &lt;- crossprod(m)             #symmetrize the random matrix
+  timing &lt;- system.time({
+    x &lt;- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3]
+  summa &lt;- summa + timing
+}
+times &lt;- summa/nsim
+cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
+
+<ul>
+<li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
+<li><a href='http://adv-r.had.co.nz/Profiling.html#vectorise' title=''>http://adv-r.had.co.nz/Profiling.html#vectorise</a></li>
+<li><a href='http://adv-r.had.co.nz/Functionals.html#functionals' title=''>http://adv-r.had.co.nz/Functionals.html#functionals</a></li>
+<li><a href='https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/' title=''>Pi vectorization</a></li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

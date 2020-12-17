@@ -1,7 +1,7 @@
 ---
 title: "Profiling your code"
 author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
-date: "May 27th, 2020"
+date: "May 27th, 2021"
 output: 
     ioslides_presentation:
        widescreen: true
@@ -16,7 +16,7 @@ output:
 
 ## Pi calculation
 
-![](MC1.png){width=100px}
+![](Images/MC1.png){width=100px}
 
 $\textrm{Surface circle} = \left ( \frac{\textrm{Surface circle}}{\textrm{Surface square}} \right ) * (\textrm{Surface square})$  
 
@@ -29,7 +29,7 @@ the ratio in parentheses is approximated with a Monte Carlo process throwing ran
 ## Pi calculation
 
 <div style="float: left; width: 50%;">
-![Surface ratio](MC2.png){width=250px}
+![Surface ratio](Images/MC2.png){width=250px}
 
 + The R function to compute Pi is:
 </div>
@@ -94,7 +94,7 @@ one can nest tic and toc calls and save the outputs to a log file:
 
 ## Monitoring the execution time
 ### Tic toc
-```{r eval=FALSE}
+```{r eval=TRUE}
 library("tictoc")
 size <- 1000000
 sim2 <- function(l) {
@@ -114,7 +114,7 @@ sim2 <- function(l) {
 
 ## Monitoring the execution time
 ### Tic toc
-```{r eval=FALSE}
+```{r eval=TRUE}
 tic("Total execution time")
     res <- sim2(size)
 toc(log = TRUE)
@@ -122,7 +122,7 @@ toc(log = TRUE)
 
 ## Monitoring the execution time
 ### Tic toc
-```{r eval=FALSE}
+```{r eval=TRUE}
 tic.log()
 tic.clearlog()
 ``` 
@@ -167,14 +167,14 @@ summaryRprof("Rprof.out")
 ## Rprof
 here you can see that the functions *runif* and *pow2* are the most expensive parts in our code. A graphical output can be obtained through the *proftools* package:
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 library(proftools)
 p <- readProfileData(filename = "Rprof.out")
 ```
 
 ## Rprof
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 plotProfileCallGraph(p, style=google.style, score="total")
 ```
 
@@ -187,7 +187,7 @@ install.packages("rbenchmark")
 ```
 then we can benchmark our function *sim()*
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 library(rbenchmark)
 size <- 500000
 bench <- benchmark(sim(size), replications=10)
@@ -196,7 +196,7 @@ bench
 
 ## Rbenchmark
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 bench 
 ```
 
@@ -212,13 +212,13 @@ install.packages("microbenchmark")
 
 and do the benchmarking with:
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 library(microbenchmark)
 bench2 <- microbenchmark(sim(size), times=10)
 ```
 
 ## Microbenchmark
-```{r eval=FALSE}
+```{r eval=TRUE}
 bench2 
 ```
 
