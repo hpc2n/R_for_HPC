@@ -6,7 +6,7 @@ output:
     ioslides_presentation:
        widescreen: true
        css: custom.css
-       logo: logo.png
+       logo: Images/logo.png
 ---
 
 ## Profiling 

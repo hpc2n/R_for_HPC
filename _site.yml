@@ -13,4 +13,4 @@ output:
   html_document:
     theme: united
     highlight: textmate
-    logo: logo.png
+    logo: "Images/logo.png"

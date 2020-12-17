@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.54    0.01    0.78</pre>
+##    0.52    0.00    0.62</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.03    0.00    0.03</pre>
+##    0.02    0.00    0.02</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   12.33    0.31   12.95</pre>
+##   13.12    0.09   13.53</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.61    0.00    0.61</pre>
+##    0.62    0.00    0.62</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -212,7 +212,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.06    0.04    0.11</pre>
+##    0.08    0.04    0.12</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
 
@@ -221,7 +221,7 @@ dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.01    0.00    0.02</pre>
+##    0.05    0.00    0.05</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -229,7 +229,7 @@ system.time(data1 &lt;- rowSums(data1))</pre>
 
 <p>Principal components analysis</p>
 
-<img width="500px" src='pca_analysis.png' title='fig:'/><p class='caption'>J. Chem. Inf. Mod., 57, 826-834 (2017)</p>
+<img width="500px" src='Images/pca_analysis.png' title='fig:'/><p class='caption'>J. Chem. Inf. Mod., 57, 826-834 (2017)</p>
 
 </article></slide><slide class=""><hgroup><h2>Different implementations of functions</h2></hgroup><article  id="different-implementations-of-functions-1">
 
@@ -238,12 +238,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    4.19    0.04    4.32</pre>
+##    4.33    0.03    4.37</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.25    0.04    2.33</pre>
+##    2.26    0.07    2.36</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -281,11 +281,11 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 
 <pre >## Unit: milliseconds
 ##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 291.2980 303.6392 316.6841 308.8289 314.7131  529.7119   100
-##  sim.comp0(size) 806.0151 836.8863 860.9411 843.8879 857.6576 1132.7756   100
-##  sim.comp1(size) 381.5065 398.0991 411.4340 403.8712 411.2674  555.5687   100
-##  sim.comp2(size) 290.5542 303.4569 314.6629 308.5514 317.3601  403.6267   100
-##  sim.comp3(size) 289.4659 296.6852 307.5448 302.9475 309.1231  482.0393   100</pre>
+##        sim(size) 291.0577 316.4991 325.1319 322.1775 328.1633  401.1085   100
+##  sim.comp0(size) 849.3398 868.3363 886.6714 881.9253 896.5020 1029.5112   100
+##  sim.comp1(size) 387.3174 409.0140 419.8925 416.1044 424.2475  565.7646   100
+##  sim.comp2(size) 301.2338 314.4177 322.0128 320.0204 326.7867  365.4081   100
+##  sim.comp3(size) 296.5905 311.5005 319.7005 317.1386 324.8915  402.4483   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -294,7 +294,7 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 <pre class = 'prettyprint lang-r'>library(ggplot2)
 autoplot(bench)</pre>
 
-<img width="450px" src='violin.png' title='fig:'/><p class='caption'>Violin Plot</p>
+<img width="450px" src='Images/violin.png' title='fig:'/><p class='caption'>Violin Plot</p>
 
 </article></slide><slide class=""><hgroup><h2>Just in time compilation</h2></hgroup><article  id="just-in-time-compilation">
 
@@ -307,8 +307,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr   min       lq     mean   median       uq      max neval
-##  sim(size) 295.4 302.8573 309.2086 307.1024 311.6901 411.5658   100</pre>
+##       expr      min       lq     mean   median     uq     max neval
+##  sim(size) 298.0728 313.0756 319.5158 320.0049 324.48 381.007   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
 

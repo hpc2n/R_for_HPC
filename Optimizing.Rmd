@@ -6,7 +6,7 @@ output:
     ioslides_presentation:
        widescreen: true
        css: custom.css
-       logo: logo.png
+       logo: Images/logo.png
 ---
 
 ## Performance improvement 
@@ -115,7 +115,7 @@ Then, it is more efficient to use matrices upon doing numerical calculations rat
 
 Principal components analysis
 
-![J. Chem. Inf. Mod., 57, 826-834 (2017)](pca_analysis.png){width=500px}
+![J. Chem. Inf. Mod., 57, 826-834 (2017)](Images/pca_analysis.png){width=500px}
 
 ## Different implementations of functions
 
@@ -175,7 +175,7 @@ library(ggplot2)
 autoplot(bench)
 ```
 
-![Violin Plot](violin.png){width=450px}
+![Violin Plot](Images/violin.png){width=450px}
 
 ## Just in time compilation
 
