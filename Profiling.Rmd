@@ -1,6 +1,6 @@
 ---
 title: "Profiling your code"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda"
 date: "May 27th, 2021"
 output: 
     ioslides_presentation:

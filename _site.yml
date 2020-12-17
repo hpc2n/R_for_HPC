@@ -11,6 +11,6 @@ navbar:
       href: Optimizing.html
 output:
   html_document:
-    theme: sandstone
+    theme: cerulean
     highlight: textmate
     logo: Images/logo.png

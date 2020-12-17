@@ -1,6 +1,6 @@
 ---
 title: "Optimizing your code"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda"
 date: "May 27th, 2020"
 output: 
     ioslides_presentation:
