@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Why should I use HPC?</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Why should I use HPC?',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: 'Motivation_files/logo.png',
+              },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Pedro Ojeda' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(Motivation_files/logo.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
+  </style>
+
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="Motivation_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">Feb., 2021</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Iris data set</h2></hgroup><article  id="iris-data-set">
+
+<p>We will use the <em>iris</em> database:</p>
+
+<pre class = 'prettyprint lang-r'>x &lt;- iris[which(iris[,5] != &quot;setosa&quot;), c(1,5)]
+head(x)</pre>
+
+<pre >##    Sepal.Length    Species
+## 51          7.0 versicolor
+## 52          6.4 versicolor
+## 53          6.9 versicolor
+## 54          5.5 versicolor
+## 55          6.5 versicolor
+## 56          5.7 versicolor</pre>
+
+</article></slide><slide class=""><hgroup><h2>Serial mode</h2></hgroup><article  id="serial-mode">
+
+<p>we will use the <em>foreach</em> function from the <em>doParallel</em> package to fit the data to a generalized linear model.</p>
+
+<pre class = 'prettyprint lang-r'>library(doParallel)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Serial mode</h2></hgroup><article  id="serial-mode-1">
+
+<p>Let’s take a look at the performance of a logistic regression model in serial mode (1 core):</p>
+
+<pre class = 'prettyprint lang-r'>trials &lt;- 10000
+stime &lt;- system.time({
+    r &lt;- foreach(icount(trials), .combine=cbind) %do% {
+        ind &lt;- sample(100,100, replace=TRUE)
+        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+        coefficients(result1)
+    }
+})[3]
+stime</pre>
+
+<pre >## elapsed 
+##   23.74</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
+
+<p>Now, look at the performance using 2 cores:</p>
+
+<pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
+registerDoParallel(cl)
+
+ptime &lt;- system.time({
+    r &lt;- foreach(icount(trials), .combine=cbind) %dopar% {
+        ind &lt;- sample(100,100, replace=TRUE)
+        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+        coefficients(result1)
+    }
+})[3]
+
+ptime</pre>
+
+<pre >## elapsed 
+##   15.97</pre>
+
+<pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
+
+<p>What are the differences between the codes?</p>
+
+</article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode-1">
+
+<p>a graphical view of the scaling behavior can be seen in the following plot:</p>
+
+<p><img src="Motivation_files/figure-html/unnamed-chunk-5-1.png" width="720" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative">
+
+<pre class = 'prettyprint lang-r'>stime &lt;- system.time(
+        foreach(i=1:1e4) %do% sqrt(i) )
+stime </pre>
+
+<pre >##    user  system elapsed 
+##    2.48    0.02    2.50</pre>
+
+<pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
+registerDoParallel(cl)
+ptime &lt;- system.time( 
+        foreach(i=1:1e4) %dopar% sqrt(i) )
+ptime </pre>
+
+<pre >##    user  system elapsed 
+##    3.59    0.28    4.03</pre>
+
+<pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative-1">
+
+<p>the message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.</p>
+
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
+
+<ul>
+<li><a href='https://swcarpentry.github.io/r-novice-inflammation/' title=''>https://swcarpentry.github.io/r-novice-inflammation/</a></li>
+<li><a href='https://www.tutorialspoint.com/r/index.htm' title=''>https://www.tutorialspoint.com/r/index.htm</a></li>
+<li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
+<li><a href='https://www.r-bloggers.com/the-wonders-of-foreach/' title=''>https://www.r-bloggers.com/the-wonders-of-foreach/</a></li>
+</ul>
+
+<p><a href='index.html' title=''>Return to Index</a></p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

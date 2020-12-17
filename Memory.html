@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memory Management</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Memory Management',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: 'Memory_files/logo.png',
+              },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Pedro Ojeda' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+    slides > slide:not(.nobackground):before {
+      font-size: 12pt;
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 60px;
+      background: url(Memory_files/logo.png) no-repeat 0 50%;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      -o-background-size: 30px 30px;
+      background-size: 30px 30px;
+      padding-left: 40px;
+      height: 30px;
+      line-height: 1.9;
+    }
+  </style>
+
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="Memory_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">Feb., 202</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Profiling Memory: Rprof</h2></hgroup><article  id="profiling-memory-rprof">
+
+<p>Rprof has tools for profiling memory:</p>
+
+<pre class = 'prettyprint lang-r'>siml &lt;- function(l) {
+ c &lt;- rep(0,l); hits &lt;- 0            #variables initialization
+ listp &lt;- as.list(seq(10000000))
+ pow2 &lt;- function(x) { x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+ for(i in 1:l){
+   x = runif(2,-1,1)
+   if( pow2(x) &lt;=1 ){ hits &lt;- hits + 1 }
+   dens &lt;- hits/i; pi_partial = dens*4; c[i] = pi_partial
+ }; return(c)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Rprof</h2></hgroup><article  id="profiling-memory-rprof-1">
+
+<pre class = 'prettyprint lang-r'>size &lt;- 1000000
+Rprof(&quot;Rprof-mem.out&quot;, memory.profiling=TRUE)
+res &lt;- siml(size)
+Rprof(NULL)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Rprof</h2></hgroup><article  id="profiling-memory-rprof-2">
+
+<pre class = 'prettyprint lang-r'>summaryRprof(&quot;Rprof-mem.out&quot;, memory=&quot;both&quot;)</pre>
+
+<pre >## $by.self
+##                   self.time self.pct total.time total.pct mem.total
+## &quot;runif&quot;                1.92    39.83       1.92     39.83    1879.8
+## &quot;as.list.default&quot;      1.64    34.02       1.64     34.02     659.5
+## &quot;siml&quot;                 0.70    14.52       4.82    100.00    3929.6
+## &quot;pow2&quot;                 0.52    10.79       0.52     10.79     534.6
+## &quot;$&lt;-&quot;                  0.02     0.41       0.02      0.41       0.0
+## &quot;getAssignedVar&quot;       0.02     0.41       0.02      0.41       4.8
+## 
+## $by.total
+##                          total.time total.pct mem.total self.time self.pct
+## &quot;siml&quot;                         4.82    100.00    3929.6      0.70    14.52
+## &quot;block_exec&quot;                   4.82    100.00    3929.6      0.00     0.00
+## &quot;call_block&quot;                   4.82    100.00    3929.6      0.00     0.00
+## &quot;eval&quot;                         4.82    100.00    3929.6      0.00     0.00
+## &quot;evaluate&quot;                     4.82    100.00    3929.6      0.00     0.00
+## &quot;evaluate::evaluate&quot;           4.82    100.00    3929.6      0.00     0.00
+## &quot;evaluate_call&quot;                4.82    100.00    3929.6      0.00     0.00
+## &quot;FUN&quot;                          4.82    100.00    3929.6      0.00     0.00
+## &quot;generator$render&quot;             4.82    100.00    3929.6      0.00     0.00
+## &quot;handle&quot;                       4.82    100.00    3929.6      0.00     0.00
+## &quot;in_dir&quot;                       4.82    100.00    3929.6      0.00     0.00
+## &quot;knitr::knit&quot;                  4.82    100.00    3929.6      0.00     0.00
+## &quot;lapply&quot;                       4.82    100.00    3929.6      0.00     0.00
+## &quot;process_file&quot;                 4.82    100.00    3929.6      0.00     0.00
+## &quot;process_group&quot;                4.82    100.00    3929.6      0.00     0.00
+## &quot;process_group.block&quot;          4.82    100.00    3929.6      0.00     0.00
+## &quot;render&quot;                       4.82    100.00    3929.6      0.00     0.00
+## &quot;render_one&quot;                   4.82    100.00    3929.6      0.00     0.00
+## &quot;rmarkdown::render&quot;            4.82    100.00    3929.6      0.00     0.00
+## &quot;rmarkdown::render_site&quot;       4.82    100.00    3929.6      0.00     0.00
+## &quot;sapply&quot;                       4.82    100.00    3929.6      0.00     0.00
+## &quot;suppressMessages&quot;             4.82    100.00    3929.6      0.00     0.00
+## &quot;timing_fn&quot;                    4.82    100.00    3929.6      0.00     0.00
+## &quot;withCallingHandlers&quot;          4.82    100.00    3929.6      0.00     0.00
+## &quot;withVisible&quot;                  4.82    100.00    3929.6      0.00     0.00
+## &quot;runif&quot;                        1.92     39.83    1879.8      1.92    39.83
+## &quot;as.list.default&quot;              1.64     34.02     659.5      1.64    34.02
+## &quot;as.list&quot;                      1.64     34.02     659.5      0.00     0.00
+## &quot;pow2&quot;                         0.52     10.79     534.6      0.52    10.79
+## &quot;cmp&quot;                          0.04      0.83       4.8      0.00     0.00
+## &quot;cmpCall&quot;                      0.04      0.83       4.8      0.00     0.00
+## &quot;cmpfun&quot;                       0.04      0.83       4.8      0.00     0.00
+## &quot;compiler:::tryCmpfun&quot;         0.04      0.83       4.8      0.00     0.00
+## &quot;doTryCatch&quot;                   0.04      0.83       4.8      0.00     0.00
+## &quot;genCode&quot;                      0.04      0.83       4.8      0.00     0.00
+## &quot;h&quot;                            0.04      0.83       4.8      0.00     0.00
+## &quot;tryCatch&quot;                     0.04      0.83       4.8      0.00     0.00
+## &quot;tryCatchList&quot;                 0.04      0.83       4.8      0.00     0.00
+## &quot;tryCatchOne&quot;                  0.04      0.83       4.8      0.00     0.00
+## &quot;tryInline&quot;                    0.04      0.83       4.8      0.00     0.00
+## &quot;$&lt;-&quot;                          0.02      0.41       0.0      0.02     0.41
+## &quot;getAssignedVar&quot;               0.02      0.41       4.8      0.02     0.41
+## &quot;as.name&quot;                      0.02      0.41       4.8      0.00     0.00
+## &quot;cb$putconst&quot;                  0.02      0.41       0.0      0.00     0.00
+## &quot;cmpCallArgs&quot;                  0.02      0.41       0.0      0.00     0.00
+## &quot;cmpCallSymFun&quot;                0.02      0.41       0.0      0.00     0.00
+## &quot;cmpForBody&quot;                   0.02      0.41       4.8      0.00     0.00
+## &quot;cmpSymbolAssign&quot;              0.02      0.41       0.0      0.00     0.00
+## &quot;make.promiseContext&quot;          0.02      0.41       0.0      0.00     0.00
+## 
+## $sample.interval
+## [1] 0.02
+## 
+## $sampling.time
+## [1] 4.82</pre>
+
+<p>notice that the memory usage reported is the accumulated memory.</p>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc</h2></hgroup><article  id="profiling-memory-gc">
+
+<p>A better approach would be by using <strong>gc()</strong> function. <strong>gc()</strong> reports the memory usage at some specific point. Information for parts of the code can be reported with the flags <strong>gcinfo()</strong>:</p>
+
+<pre class = 'prettyprint lang-r'>&gt; size &lt;- 1000000
+&gt; gc()
+          used (Mb) gc trigger (Mb) max used (Mb)
+Ncells  551156 29.5    1222600 65.3  1067006 57.0
+Vcells 1413536 10.8    8388608 64.0  1745827 13.4
+
+&gt; gcinfo(TRUE)   #checking the memory usage during function execution
+&gt; res &lt;- siml(size)
+... ommited lines
+Garbage collection 59 = 49+3+7 (level 0) ... 
+563.6 Mbytes of cons cells used (79%)
+171.1 Mbytes of vectors used (76%)
+&gt; gcinfo(FALSE)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc</h2></hgroup><article  id="profiling-memory-gc-1">
+
+<p>A better approach would be by using <strong>gc()</strong> function. <strong>gc()</strong> reports the memory usage at some specific point. Information for parts of the code can be reported with the flags <strong>gcinfo()</strong>:</p>
+
+<p>Finally, a call to <strong>gc()</strong> will report the memory allocated for the outputs of the function <strong>res &lt;- siml()</strong>:</p>
+
+<pre class = 'prettyprint lang-r'>&gt; gc()
+          used (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  558900 29.9   10696839 571.3 11155454 595.8
+Vcells 2429818 18.6   23726023 181.1 29657289 226.3</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc</h2></hgroup><article  id="profiling-memory-gc-2">
+
+<p>gc() can help us to find memory usage changes upon creating objects:</p>
+
+<pre class = 'prettyprint lang-r'>&gt; gc(reset=TRUE)
+          used (Mb) gc trigger (Mb) max used (Mb)
+Ncells  562188 30.1    1154511 61.7   562188 30.1
+Vcells 1425756 10.9    8388608 64.0  1425756 10.9
+&gt; listp &lt;- as.list(seq(10000000))
+&gt; gc()
+           used  (Mb) gc trigger   (Mb) max used  (Mb)
+Ncells 10564701 564.3   22068058 1178.6 10567700 564.4
+Vcells 21431560 163.6   33209716  253.4 21441849 163.6</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc</h2></hgroup><article  id="profiling-memory-gc-3">
+
+<pre class = 'prettyprint lang-r'>&gt; rm(listp)
+&gt; gc()
+          used (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  564859 30.2   17654447 942.9 10567700 564.4
+Vcells 1431905 11.0   26567773 202.7 21441849 163.6
+&gt; gc(reset=TRUE)
+          used (Mb) gc trigger  (Mb) max used (Mb)
+Ncells  564869 30.2   14123558 754.3   564869 30.2
+Vcells 1431935 11.0   21254219 162.2  1431935 11.0   </pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Pryr</h2></hgroup><article  id="profiling-memory-pryr">
+
+<p>Another way to monitor the memory size of the objects is with the <em>Pryr</em> package which uses the function <strong>object_size()</strong> for this purpose.</p>
+
+<pre class = 'prettyprint lang-r'>library(pryr)</pre>
+
+<p>R allocates memory in a heuristic manner. To see this, let us monitor how an object request for memory as it grows with the <strong>object_size()</strong> function:</p>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Pryr</h2></hgroup><article  id="profiling-memory-pryr-1">
+
+<pre class = 'prettyprint lang-r'>sizes &lt;- sapply(0:50, function(n) object_size(seq_len(n)))
+plot(0:50, sizes, xlab = &quot;Length&quot;, ylab = &quot;Size (bytes)&quot;, 
+     type = &quot;s&quot;)</pre>
+
+<p><img src="Memory_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" /></p>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Pryr</h2></hgroup><article  id="profiling-memory-pryr-2">
+
+<p>another feature in R is that it tries to save memory by using pointers to existing memory allocations:</p>
+
+<pre class = 'prettyprint lang-r'>x &lt;- 1:1e6
+object_size(x)</pre>
+
+<pre >## 4 MB</pre>
+
+<pre class = 'prettyprint lang-r'>y &lt;- list(x, x, x)
+object_size(y)</pre>
+
+<pre >## 4 MB</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Pryr</h2></hgroup><article  id="profiling-memory-pryr-3">
+
+<pre class = 'prettyprint lang-r'>object_size(x, y)</pre>
+
+<pre >## 4 MB</pre>
+
+<p>after modifying one element of the list we get a different value:</p>
+
+<pre class = 'prettyprint lang-r'>y[[1]] &lt;- as.integer(x+1-1)
+object_size(y)</pre>
+
+<pre >## 8 MB</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Lineprof</h2></hgroup><article  id="profiling-memory-lineprof">
+
+<p>Lineprof package can be installed with:</p>
+
+<pre class = 'prettyprint lang-r'>devtools::install_github(&quot;hadley/lineprof&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Lineprof</h2></hgroup><article  id="profiling-memory-lineprof-1">
+
+<pre class = 'prettyprint lang-r'>library(lineprof)
+siml &lt;- function(l) {
+  c &lt;- rep(0,l); 
+  hits &lt;- 0
+  listp &lt;- as.list(seq(10000000))
+  pow2 &lt;- function(x) { x2 &lt;- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+    x = runif(2,-1,1)
+    if( pow2(x) &lt;=1 ){ hits &lt;- hits + 1 }
+    dens &lt;- hits/i; pi_partial = dens*4; c[i] = pi_partial
+  }
+  
+  return(c)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: Lineprof</h2></hgroup><article  id="profiling-memory-lineprof-2">
+
+<pre class = 'prettyprint lang-r'>prof &lt;- lineprof(siml(1000000))
+prof
+
+Output: 
+     time   alloc release dups                                   ref
+1   0.009   5.624   0.000 1808 c(&quot;compiler:::tryCmpfun&quot;, &quot;tryCatch&quot;)
+2   0.002   0.100   0.000  235                          character(0)
+3   0.520 556.091   5.220    2       c(&quot;as.list&quot;, &quot;as.list.default&quot;)
+4   0.001   5.332   0.000    0                               &quot;runif&quot;
+5   0.001   5.253   0.000    0                          character(0)
+6   0.001   5.197   0.000    0                                    #6
+7   0.009  17.406  16.858    0                               &quot;runif&quot;
+8   0.001   8.230   0.000    0                          character(0)
+9   0.019  24.799  48.774    0                               &quot;runif&quot;
+10  0.001  11.420   0.000    0                          character(0)
+11  0.002   7.451   0.000    0                               &quot;runif&quot;
+...  </pre>
+
+</article></slide><slide class=""><hgroup><h2>Dealing with big arrays</h2></hgroup><article  id="dealing-with-big-arrays">
+
+<p>For big data file we can use <strong>memory-mapped</strong> files with the <strong>bigmemory</strong> package. In case the <strong>bigmemory</strong> package is not installed execute the command:</p>
+
+<pre class = 'prettyprint lang-r'>install.packages(&quot;bigmemory&quot;)</pre>
+
+<pre class = 'prettyprint lang-r'>library(bigmemory)
+bm &lt;- big.matrix(1e8, 3, backingfile = &quot;bm&quot;, backingpath = getwd())
+bm</pre>
+
+<p>the large array can be retrieved for subsequent use as follows:</p>
+
+<pre class = 'prettyprint lang-r'>my.bm &lt;- attach.big.matrix(file.path(getwd(), &quot;bm.desc&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Dealing with big arrays</h2></hgroup><article  id="dealing-with-big-arrays-1">
+
+<p>now, work with chunks of \(10^7\) rows,</p>
+
+<pre class = 'prettyprint lang-r'>chunksize &lt;- 1e7
+start &lt;- 1
+while (start &lt;= nrow(bm)) {
+  end &lt;- min(start + chunksize -1, nrow(bm))
+  chunksize &lt;- end - start + 1
+  bm[start:end, 1] &lt;- rpois(chunksize, 1e3)
+  bm[start:end, 2] &lt;- sample(0:1, chunksize, TRUE, c(0.7,0.3))
+  bm[start:end, 3] &lt;- runif(chunksize, 0, 1e5)
+  start &lt;- start + chunksize
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
+
+<ul>
+<li><a href='https://swcarpentry.github.io/r-novice-inflammation/' title=''>https://swcarpentry.github.io/r-novice-inflammation/</a></li>
+<li><a href='https://www.tutorialspoint.com/r/index.htm' title=''>https://www.tutorialspoint.com/r/index.htm</a></li>
+<li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
+<li><a href='http://adv-r.had.co.nz/memory.html' title=''>http://adv-r.had.co.nz/memory.html</a></li>
+<li><a href='https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution' title=''>https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution</a></li>
+</ul>
+
+<p><a href='index.html' title=''>Return to Index</a></p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

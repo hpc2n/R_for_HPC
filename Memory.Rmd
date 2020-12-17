@@ -1,0 +1,245 @@
+---
+title: "Memory Management"
+author: "Pedro Ojeda"
+date: "Feb., 202"
+output: 
+    ioslides_presentation:
+       widescreen: true
+       css: custom.css
+       logo: Images/logo.png
+---
+
+## Profiling Memory: Rprof 
+
+Rprof has tools for profiling memory:
+
+```{r}
+siml <- function(l) {
+ c <- rep(0,l); hits <- 0            #variables initialization
+ listp <- as.list(seq(10000000))
+ pow2 <- function(x) { x2 <- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+ for(i in 1:l){
+   x = runif(2,-1,1)
+   if( pow2(x) <=1 ){ hits <- hits + 1 }
+   dens <- hits/i; pi_partial = dens*4; c[i] = pi_partial
+ }; return(c)
+}
+```
+
+## Profiling Memory: Rprof
+
+```{r}
+size <- 1000000
+Rprof("Rprof-mem.out", memory.profiling=TRUE)
+res <- siml(size)
+Rprof(NULL)
+```
+
+## Profiling Memory: Rprof
+
+```{r}
+summaryRprof("Rprof-mem.out", memory="both")
+```
+
+notice that the memory usage reported is the accumulated memory. 
+
+## Profiling Memory: gc
+
+A better approach would be by using **gc()** function. **gc()** reports the memory usage at some specific point. Information for parts of the code can be reported with the flags **gcinfo()**: 
+
+```{r eval=FALSE}
+> size <- 1000000
+> gc()
+          used (Mb) gc trigger (Mb) max used (Mb)
+Ncells  551156 29.5    1222600 65.3  1067006 57.0
+Vcells 1413536 10.8    8388608 64.0  1745827 13.4
+
+> gcinfo(TRUE)   #checking the memory usage during function execution
+> res <- siml(size)
+... ommited lines
+Garbage collection 59 = 49+3+7 (level 0) ... 
+563.6 Mbytes of cons cells used (79%)
+171.1 Mbytes of vectors used (76%)
+> gcinfo(FALSE)
+```
+## Profiling Memory: gc
+
+A better approach would be by using **gc()** function. **gc()** reports the memory usage at some specific point. Information for parts of the code can be reported with the flags **gcinfo()**: 
+
+Finally, a call to **gc()** will report the memory allocated for the outputs of the function **res <- siml()**:
+
+```{r eval=FALSE}
+> gc()
+          used (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  558900 29.9   10696839 571.3 11155454 595.8
+Vcells 2429818 18.6   23726023 181.1 29657289 226.3
+```
+
+## Profiling Memory: gc
+
+gc() can help us to find memory usage changes upon creating objects:
+
+```{r eval=FALSE}
+> gc(reset=TRUE)
+          used (Mb) gc trigger (Mb) max used (Mb)
+Ncells  562188 30.1    1154511 61.7   562188 30.1
+Vcells 1425756 10.9    8388608 64.0  1425756 10.9
+> listp <- as.list(seq(10000000))
+> gc()
+           used  (Mb) gc trigger   (Mb) max used  (Mb)
+Ncells 10564701 564.3   22068058 1178.6 10567700 564.4
+Vcells 21431560 163.6   33209716  253.4 21441849 163.6
+```
+
+## Profiling Memory: gc
+
+```{r eval=FALSE}
+> rm(listp)
+> gc()
+          used (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  564859 30.2   17654447 942.9 10567700 564.4
+Vcells 1431905 11.0   26567773 202.7 21441849 163.6
+> gc(reset=TRUE)
+          used (Mb) gc trigger  (Mb) max used (Mb)
+Ncells  564869 30.2   14123558 754.3   564869 30.2
+Vcells 1431935 11.0   21254219 162.2  1431935 11.0   
+```
+
+## Profiling Memory: Pryr
+
+Another way to monitor the memory size of the objects is with the *Pryr* package which uses the function **object_size()** for this purpose. 
+
+```{r eval=TRUE, message=FALSE, warning=FALSE}
+library(pryr)
+```
+
+R allocates memory in a heuristic manner. To see this, let us monitor how an object request for memory as it grows with the **object_size()** function:
+
+## Profiling Memory: Pryr
+
+```{r eval=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+sizes <- sapply(0:50, function(n) object_size(seq_len(n)))
+plot(0:50, sizes, xlab = "Length", ylab = "Size (bytes)", 
+     type = "s")
+```
+
+## Profiling Memory: Pryr
+
+another feature in R is that it tries to save memory by using pointers to existing memory allocations:
+
+```{r eval=TRUE}
+x <- 1:1e6
+object_size(x)
+y <- list(x, x, x)
+object_size(y)
+```
+
+## Profiling Memory: Pryr
+
+```{r eval=TRUE}
+object_size(x, y)
+```
+
+after modifying one element of the list we get a different value:
+
+```{r eval=TRUE}
+y[[1]] <- as.integer(x+1-1)
+object_size(y)
+```
+
+## Profiling Memory: Lineprof
+
+Lineprof package can be installed with:
+
+```{r eval=FALSE}
+devtools::install_github("hadley/lineprof")
+```
+
+## Profiling Memory: Lineprof
+
+```{r eval=FALSE}
+library(lineprof)
+siml <- function(l) {
+  c <- rep(0,l); 
+  hits <- 0
+  listp <- as.list(seq(10000000))
+  pow2 <- function(x) { x2 <- sqrt( x[1]*x[1]+x[2]*x[2] ); return(x2) }
+  for(i in 1:l){
+    x = runif(2,-1,1)
+    if( pow2(x) <=1 ){ hits <- hits + 1 }
+    dens <- hits/i; pi_partial = dens*4; c[i] = pi_partial
+  }
+  
+  return(c)
+}
+```
+
+## Profiling Memory: Lineprof
+
+```{r eval=FALSE}
+prof <- lineprof(siml(1000000))
+prof
+
+Output: 
+     time   alloc release dups                                   ref
+1   0.009   5.624   0.000 1808 c("compiler:::tryCmpfun", "tryCatch")
+2   0.002   0.100   0.000  235                          character(0)
+3   0.520 556.091   5.220    2       c("as.list", "as.list.default")
+4   0.001   5.332   0.000    0                               "runif"
+5   0.001   5.253   0.000    0                          character(0)
+6   0.001   5.197   0.000    0                                    #6
+7   0.009  17.406  16.858    0                               "runif"
+8   0.001   8.230   0.000    0                          character(0)
+9   0.019  24.799  48.774    0                               "runif"
+10  0.001  11.420   0.000    0                          character(0)
+11  0.002   7.451   0.000    0                               "runif"
+...  
+```
+
+## Dealing with big arrays
+
+For big data file we can use **memory-mapped** files with the **bigmemory** package. In case the **bigmemory** package is not installed execute the command:
+
+```{r eval=FALSE}
+install.packages("bigmemory")
+```
+
+```{r eval=FALSE}
+library(bigmemory)
+bm <- big.matrix(1e8, 3, backingfile = "bm", backingpath = getwd())
+bm
+```
+
+the large array can be retrieved for subsequent use as follows:
+
+```{r eval=FALSE}
+my.bm <- attach.big.matrix(file.path(getwd(), "bm.desc"))
+
+```
+
+## Dealing with big arrays
+
+now, work with chunks of $10^7$ rows,
+
+```{r eval=FALSE}
+chunksize <- 1e7
+start <- 1
+while (start <= nrow(bm)) {
+  end <- min(start + chunksize -1, nrow(bm))
+  chunksize <- end - start + 1
+  bm[start:end, 1] <- rpois(chunksize, 1e3)
+  bm[start:end, 2] <- sample(0:1, chunksize, TRUE, c(0.7,0.3))
+  bm[start:end, 3] <- runif(chunksize, 0, 1e5)
+  start <- start + chunksize
+}
+```
+
+
+## References
+* https://swcarpentry.github.io/r-novice-inflammation/
+* https://www.tutorialspoint.com/r/index.htm
+* R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
+* http://adv-r.had.co.nz/memory.html
+* https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution
+
+[Return to Index](index.html)

@@ -9,6 +9,10 @@ navbar:
       href: Profiling.html
     - text: "Optimizing"
       href: Optimizing.html
+    - text: "Memory Management"
+      href: Memory.html
+    - text: "Motivation for HPC"
+      href: Motivation.html
 output:
   html_document:
     theme: cerulean

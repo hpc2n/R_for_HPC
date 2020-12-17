@@ -1,7 +1,7 @@
 ---
 title: "Profiling your code"
 author: "Pedro Ojeda"
-date: "May 27th, 2021"
+date: "Feb., 2021"
 output: 
     ioslides_presentation:
        widescreen: true
@@ -225,8 +225,11 @@ bench2
 in this case we obtain more statistics of the benchmarking process like the *mean*, *min*, *max*, ... 
 
 
+
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/
 * https://www.tutorialspoint.com/r/index.htm
 * R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
 * [Pi calculation](https://www.r-bloggers.com/estimation-of-the-number-pi-a-monte-carlo-simulation/)
+
+[Return to Index](index.html)

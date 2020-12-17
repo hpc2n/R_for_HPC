@@ -118,7 +118,7 @@ slide:not(.current) .plotly.html-widget{
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">May 27th, 2020</p>
+            <p style="margin-top: 6px; margin-left: -2px;">Feb., 2021</p>
           </hgroup>
   </slide>
 
@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.56    0.00    0.73</pre>
+##    0.47    0.02    0.80</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.01    0.00    0.01</pre>
+##    0.02    0.00    0.01</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   13.07    0.19   13.47</pre>
+##   12.14    1.16   13.46</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.64    0.00    0.64</pre>
+##    0.62    0.00    0.65</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -212,7 +212,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.10    0.03    0.13</pre>
+##    0.09    0.02    0.11</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
 
@@ -238,12 +238,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    4.25    0.04    4.31</pre>
+##    4.01    0.10    4.12</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.32    0.03    2.35</pre>
+##    2.08    0.17    2.25</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -281,11 +281,11 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 
 <pre >## Unit: milliseconds
 ##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 304.9453 321.2228 330.3996 326.4652 331.7990  446.3768   100
-##  sim.comp0(size) 856.0648 888.9633 917.8356 901.6178 918.1357 1207.1019   100
-##  sim.comp1(size) 405.7520 418.5249 433.7318 426.0639 433.1564  598.6138   100
-##  sim.comp2(size) 290.8633 319.0980 328.1697 324.0375 330.6361  482.9594   100
-##  sim.comp3(size) 300.5214 318.1046 332.3655 325.7346 333.9422  483.6942   100</pre>
+##        sim(size) 253.2608 273.9666 292.8627 291.0073 304.5742  460.7588   100
+##  sim.comp0(size) 727.4323 766.8859 806.4186 803.2326 835.6908 1087.0396   100
+##  sim.comp1(size) 334.0401 360.5053 383.8519 377.9669 396.8550  514.0146   100
+##  sim.comp2(size) 252.1845 274.6658 291.6320 289.0307 305.9122  371.4176   100
+##  sim.comp3(size) 250.2061 276.4692 291.2149 290.0901 307.7761  345.9279   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -307,8 +307,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr     min       lq     mean  median       uq      max neval
-##  sim(size) 304.194 321.0356 327.6871 328.091 332.4457 402.7471   100</pre>
+##       expr      min       lq     mean   median       uq      max neval
+##  sim(size) 251.7662 264.8173 285.7278 283.1279 295.6008 431.2169   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
 
@@ -414,7 +414,9 @@ cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &q
 <li><a href='http://adv-r.had.co.nz/Profiling.html#vectorise' title=''>http://adv-r.had.co.nz/Profiling.html#vectorise</a></li>
 <li><a href='http://adv-r.had.co.nz/Functionals.html#functionals' title=''>http://adv-r.had.co.nz/Functionals.html#functionals</a></li>
 <li><a href='https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/' title=''>Pi vectorization</a></li>
-</ul></article></slide>
+</ul>
+
+<p><a href='index.html' title=''>Return to Index</a></p></article></slide>
 
 
   <slide class="backdrop"></slide>

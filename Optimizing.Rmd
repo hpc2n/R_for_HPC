@@ -1,7 +1,7 @@
 ---
 title: "Optimizing your code"
 author: "Pedro Ojeda"
-date: "May 27th, 2020"
+date: "Feb., 2021"
 output: 
     ioslides_presentation:
        widescreen: true
@@ -304,3 +304,5 @@ cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
 * http://adv-r.had.co.nz/Profiling.html#vectorise
 * http://adv-r.had.co.nz/Functionals.html#functionals
 * [Pi vectorization](https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/)
+
+[Return to Index](index.html)
