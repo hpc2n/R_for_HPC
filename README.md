@@ -1,2 +1,2 @@
 # R_for_HPC
-Material for R course
+Material for R in HPC course
