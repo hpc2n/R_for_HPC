@@ -13,6 +13,8 @@ navbar:
       href: Memory.html
     - text: "Motivation for HPC"
       href: Motivation.html
+    - text: "Using R in HPC"
+      href: RHPC.html
 output:
   html_document:
     theme: cerulean

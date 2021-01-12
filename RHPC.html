@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Why should I use HPC?</title>
+  <title>Using R in HPC</title>
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -19,12 +19,12 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'Why should I use HPC?',
+                title: 'Using R in HPC',
                         useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
         enableTouch: true,
-                        favIcon: 'Motivation_files/logo.png',
+                        favIcon: 'RHPC_files/logo.png',
               },
 
       // Author information
@@ -92,7 +92,7 @@ slide:not(.current) .plotly.html-widget{
       position: absolute;
       bottom: 20px;
       left: 60px;
-      background: url(Motivation_files/logo.png) no-repeat 0 50%;
+      background: url(RHPC_files/logo.png) no-repeat 0 50%;
       -webkit-background-size: 30px 30px;
       -moz-background-size: 30px 30px;
       -o-background-size: 30px 30px;
@@ -112,7 +112,7 @@ slide:not(.current) .plotly.html-widget{
 <slides class="layout-widescreen">
 
   <slide class="title-slide segue nobackground">
-        <aside class="gdbar"><img src="Motivation_files/logo.png"></aside>
+        <aside class="gdbar"><img src="RHPC_files/logo.png"></aside>
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
@@ -122,97 +122,49 @@ slide:not(.current) .plotly.html-widget{
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Iris data set</h2></hgroup><article  id="iris-data-set">
+<slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel">
 
-<p>We will use the <em>iris</em> database:</p>
+<p>Memory profiling is crucial upon using parallel packages. Suppose we have a data frame <em>mydata</em> which will be processed with the <em>clusterApply</em> function</p>
 
-<pre class = 'prettyprint lang-r'>x &lt;- iris[which(iris[,5] != &quot;setosa&quot;), c(1,5)]
-head(x)</pre>
+<pre class = 'prettyprint lang-r'>&gt;gcinfo(TRUE)   #activate gc 
+&gt;N &lt;- 5000000
+&gt;mydata &lt;- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
+...
+Garbage collection 23 = 14+2+7 (level 0) ... 
+43.5 Mbytes of cons cells used (66%)
+130.4 Mbytes of vectors used (65%)
+&gt;gc()
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells   572516  30.6    1233268  65.9  1233268  65.9
+Vcells 16492769 125.9   26338917 201.0 19085502 145.7</pre>
 
-<pre >##    Sepal.Length    Species
-## 51          7.0 versicolor
-## 52          6.4 versicolor
-## 53          6.9 versicolor
-## 54          5.5 versicolor
-## 55          6.5 versicolor
-## 56          5.7 versicolor</pre>
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel-1">
 
-</article></slide><slide class=""><hgroup><h2>Serial mode</h2></hgroup><article  id="serial-mode">
+<p>Then, we use a function to partition the data frame by cores</p>
 
-<p>we will use the <em>foreach</em> function from the <em>doParallel</em> package to fit the data to a generalized linear model.</p>
+<pre class = 'prettyprint lang-r'>&gt;library(parallel)  #using parallel package
+&gt;detectCores()
+&gt;P &lt;- detectCores(logical = FALSE)  #only physical cores
 
-<pre class = 'prettyprint lang-r'>library(doParallel)</pre>
+&gt;myfunc &lt;- function(id) { #function to sum by rows
+&gt;  arguments &lt;- mydata[id, ]
+&gt;  arguments$one + arguments$two + arguments$three
+&gt;}</pre>
 
-</article></slide><slide class=""><hgroup><h2>Serial mode</h2></hgroup><article  id="serial-mode-1">
+</article></slide><slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel-2">
 
-<p>Let’s take a look at the performance of a logistic regression model in serial mode (1 core):</p>
-
-<pre class = 'prettyprint lang-r'>trials &lt;- 10000
-stime &lt;- system.time({
-    r &lt;- foreach(icount(trials), .combine=cbind) %do% {
-        ind &lt;- sample(100,100, replace=TRUE)
-        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
-        coefficients(result1)
-    }
-})[3]
-stime</pre>
-
-<pre >## elapsed 
-##   25.76</pre>
-
-</article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
-
-<p>Now, look at the performance using 2 cores:</p>
-
-<pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
-registerDoParallel(cl)
-
-ptime &lt;- system.time({
-    r &lt;- foreach(icount(trials), .combine=cbind) %dopar% {
-        ind &lt;- sample(100,100, replace=TRUE)
-        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
-        coefficients(result1)
-    }
-})[3]
-
-ptime</pre>
-
-<pre >## elapsed 
-##   16.36</pre>
-
-<pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
-
-<p>What are the differences between the codes?</p>
-
-</article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode-1">
-
-<p>a graphical view of the scaling behavior can be seen in the following plot:</p>
-
-<p><img src="Motivation_files/figure-html/unnamed-chunk-5-1.png" width="720" /></p>
-
-</article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative">
-
-<pre class = 'prettyprint lang-r'>stime &lt;- system.time(
-        foreach(i=1:1e4) %do% sqrt(i) )
-stime </pre>
-
-<pre >##    user  system elapsed 
-##    2.48    0.02    2.55</pre>
-
-<pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
-registerDoParallel(cl)
-ptime &lt;- system.time( 
-        foreach(i=1:1e4) %dopar% sqrt(i) )
-ptime </pre>
-
-<pre >##    user  system elapsed 
-##    3.28    0.34    3.83</pre>
-
-<pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
-
-</article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative-1">
-
-<p>the message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.</p>
+<pre class = 'prettyprint lang-r'>&gt;cl &lt;- makeCluster(P)   #distribute the work across cores
+&gt;clusterExport(cl, &quot;mydata&quot;)
+&gt;res &lt;- clusterApply(cl, 1:N, fun = myfunc)
+&gt;stopCluster(cl)
+...
+Garbage collection 1196 = 1128+50+18 (level 0) ... 
+312.5 Mbytes of cons cells used (60%)
+206.5 Mbytes of vectors used (59%)
+&gt; gc()
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5850436 312.5    9776540 522.2  9776540 522.2
+Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 
@@ -220,7 +172,8 @@ ptime </pre>
 <li><a href='https://swcarpentry.github.io/r-novice-inflammation/' title=''>https://swcarpentry.github.io/r-novice-inflammation/</a></li>
 <li><a href='https://www.tutorialspoint.com/r/index.htm' title=''>https://www.tutorialspoint.com/r/index.htm</a></li>
 <li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
-<li><a href='https://www.r-bloggers.com/the-wonders-of-foreach/' title=''>https://www.r-bloggers.com/the-wonders-of-foreach/</a></li>
+<li><a href='http://adv-r.had.co.nz/memory.html' title=''>http://adv-r.had.co.nz/memory.html</a></li>
+<li><a href='https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution' title=''>https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution</a></li>
 </ul>
 
 <p><a href='index.html' title=''>Return to Index</a></p></article></slide>

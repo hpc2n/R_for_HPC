@@ -1,7 +1,7 @@
 ---
 title: "Memory Management"
 author: "Pedro Ojeda"
-date: "Feb., 202"
+date: "Feb., 2021"
 output: 
     ioslides_presentation:
        widescreen: true
@@ -104,6 +104,7 @@ Vcells 1431905 11.0   26567773 202.7 21441849 163.6
 Ncells  564869 30.2   14123558 754.3   564869 30.2
 Vcells 1431935 11.0   21254219 162.2  1431935 11.0   
 ```
+
 
 ## Profiling Memory: Pryr
 

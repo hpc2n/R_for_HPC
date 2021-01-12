@@ -1,0 +1,68 @@
+---
+title: "Using R in HPC"
+author: "Pedro Ojeda"
+date: "Feb., 2021"
+output: 
+    ioslides_presentation:
+       widescreen: true
+       css: custom.css
+       logo: Images/logo.png
+---
+
+## Profiling Memory: gc (Parallel)
+
+Memory profiling is crucial upon using parallel packages. Suppose we have a data frame *mydata* which will be processed with the *clusterApply* function
+
+```{r eval=FALSE}
+>gcinfo(TRUE)   #activate gc 
+>N <- 5000000
+>mydata <- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
+...
+Garbage collection 23 = 14+2+7 (level 0) ... 
+43.5 Mbytes of cons cells used (66%)
+130.4 Mbytes of vectors used (65%)
+>gc()
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells   572516  30.6    1233268  65.9  1233268  65.9
+Vcells 16492769 125.9   26338917 201.0 19085502 145.7
+```
+
+## Profiling Memory: gc (Parallel)
+Then, we use a function to partition the data frame by cores
+
+```{r eval=FALSE}
+>library(parallel)  #using parallel package
+>detectCores()
+>P <- detectCores(logical = FALSE)  #only physical cores
+
+>myfunc <- function(id) { #function to sum by rows
+>  arguments <- mydata[id, ]
+>  arguments$one + arguments$two + arguments$three
+>}
+```
+
+## Profiling Memory: gc (Parallel)
+
+```{r eval=FALSE}
+>cl <- makeCluster(P)   #distribute the work across cores
+>clusterExport(cl, "mydata")
+>res <- clusterApply(cl, 1:N, fun = myfunc)
+>stopCluster(cl)
+...
+Garbage collection 1196 = 1128+50+18 (level 0) ... 
+312.5 Mbytes of cons cells used (60%)
+206.5 Mbytes of vectors used (59%)
+> gc()
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5850436 312.5    9776540 522.2  9776540 522.2
+Vcells 27062930 206.5   45804848 349.5 42982557 328.0
+```
+
+## References
+* https://swcarpentry.github.io/r-novice-inflammation/
+* https://www.tutorialspoint.com/r/index.htm
+* R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
+* http://adv-r.had.co.nz/memory.html
+* https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution
+
+[Return to Index](index.html) 
