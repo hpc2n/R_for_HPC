@@ -9,6 +9,65 @@ output:
        logo: Images/logo.png
 ---
 
+## Desktop machine vs. HPC architectures
+
+![](Images/kebne_arch.png){width=300px}
+
+## Running several independent jobs
+
+
+## Parallel packages
+A common set of instructions to use parallel capabilities of some packages
+
+```{r eval=FALSE}
+library("package-name")
+
+cl <- makeCluster(NumberofCores)
+registerDoParallel(cl)
+... #code to be run in parallel mode
+stopCluster(cl)
+```
+
+## Parallel packages examples
+
+**doParallel** package
+
+```{r eval=FALSE}
+library(doParallel)
+cl <- makeCluster(2)
+registerDoParallel(cl)
+
+ptime <- system.time({
+    r <- foreach(icount(trials), .combine=cbind) %dopar% {
+        ind <- sample(100,100, replace=TRUE)
+        result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+        coefficients(result1)
+    }
+})[3]
+
+ptime
+stopCluster(cl)
+```
+
+## Parallel packages examples
+
+**parallel** package
+
+```{r eval=FALSE}
+library(parallel)  #using parallel package
+detectCores()
+P <- detectCores(logical = FALSE)  #only physical cores
+
+myfunc <- function(id) { #function to sum by rows
+  arguments <- mydata[id, ]
+  arguments$one + arguments$two + arguments$three }
+
+cl <- makeCluster(P)   #distribute the work across cores
+clusterExport(cl, "mydata")
+res <- clusterApply(cl, 1:N, fun = myfunc)
+stopCluster(cl)
+```
+
 ## Profiling Memory: gc (Parallel)
 
 Memory profiling is crucial upon using parallel packages. Suppose we have a data frame *mydata* which will be processed with the *clusterApply* function
@@ -57,6 +116,29 @@ Garbage collection 1196 = 1128+50+18 (level 0) ...
 Ncells  5850436 312.5    9776540 522.2  9776540 522.2
 Vcells 27062930 206.5   45804848 349.5 42982557 328.0
 ```
+
+
+## Using R at HPC2N
+
+There are several versions of R installed on Kebnekaise
+
+```{r eval=FALSE}
+>ml spider R
+     Versions:
+        R/3.3.1
+        R/3.4.4-X11-20180131
+        R/3.5.1-Python-2.7.15
+        R/3.5.1
+        R/3.6.0
+        R/3.6.2
+        R/4.0.0
+        
+>ml spider R/3.6.0
+    You will need to load all module(s) on any one of the lines below before the "R/3.6.0" module is available to load.
+      GCC/8.2.0-2.31.1  OpenMPI/3.1.3
+```
+
+
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

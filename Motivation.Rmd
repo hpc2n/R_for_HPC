@@ -1,5 +1,5 @@
 ---
-title: "Why should I use HPC?"
+title: "Should I use HPC?"
 author: "Pedro Ojeda"
 date: "Feb., 2021"
 output: 
@@ -97,7 +97,17 @@ stopCluster(cl)
 
 the message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.
 
+## Machine Learning models
 
+![](Images/decision-trees.png){width=300px}
+
+## Machine Learning models
+
+![](Images/decision-trees-2.png){width=300px}
+
+## Machine Learning models
+
+![](Images/cross-val.png){width=300px}
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

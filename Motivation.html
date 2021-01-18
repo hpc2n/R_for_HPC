@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Why should I use HPC?</title>
+  <title>Should I use HPC?</title>
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -19,7 +19,7 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'Why should I use HPC?',
+                title: 'Should I use HPC?',
                         useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
@@ -158,7 +158,7 @@ stime &lt;- system.time({
 stime</pre>
 
 <pre >## elapsed 
-##   25.76</pre>
+##   28.83</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
 
@@ -178,7 +178,7 @@ ptime &lt;- system.time({
 ptime</pre>
 
 <pre >## elapsed 
-##   16.36</pre>
+##   16.72</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
@@ -197,7 +197,7 @@ ptime</pre>
 stime </pre>
 
 <pre >##    user  system elapsed 
-##    2.48    0.02    2.55</pre>
+##    3.46    0.01    4.16</pre>
 
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
@@ -206,13 +206,25 @@ ptime &lt;- system.time(
 ptime </pre>
 
 <pre >##    user  system elapsed 
-##    3.28    0.34    3.83</pre>
+##    3.59    0.24    4.13</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative-1">
 
 <p>the message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.</p>
+
+</article></slide><slide class=""><hgroup><h2>Machine Learning models</h2></hgroup><article  id="machine-learning-models">
+
+<img width="300px" src='Images/decision-trees.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Machine Learning models</h2></hgroup><article  id="machine-learning-models-1">
+
+<img width="300px" src='Images/decision-trees-2.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Machine Learning models</h2></hgroup><article  id="machine-learning-models-2">
+
+<img width="300px" src='Images/cross-val.png' title=''/>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 
