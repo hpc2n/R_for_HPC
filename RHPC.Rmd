@@ -11,9 +11,27 @@ output:
 
 ## Desktop machine vs. HPC architectures
 
-![](Images/kebne_arch.png){width=300px}
+![](Images/kebne_arch.png){width=700px}
 
 ## Running several independent jobs
+
+One can use job arrays option in SLURM to run independent instances of a program:
+
+```{r eval=FALSE}
+#!/bin/bash
+#SBATCH -A Project_ID
+#Asking for 10 min.
+#SBATCH -t 00:12:00
+#SBATCH --array=1-28
+##Writing the output and error files
+#SBATCH --output=Array_test.%A_%a.out
+#SBATCH --error=Array_test.%A_%a.error
+
+ml GCC/8.2.0-2.31.1  OpenMPI/3.1.3
+ml R/3.6.0
+
+R --no-save --no-restore -f script.R
+```
 
 
 ## Parallel packages

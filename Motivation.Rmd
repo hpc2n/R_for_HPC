@@ -99,15 +99,15 @@ the message from this simple calculation is that one always needs to check the p
 
 ## Machine Learning models
 
-![](Images/decision-trees.png){width=300px}
+![](Images/decision-trees.png){width=700px}
 
 ## Machine Learning models
 
-![](Images/decision-trees-2.png){width=300px}
+![](Images/decision-trees-2.png){width=700px}
 
 ## Machine Learning models
 
-![](Images/cross-val.png){width=300px}
+![](Images/cross-val.png){width=700px}
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

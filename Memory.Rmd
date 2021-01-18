@@ -148,6 +148,18 @@ y[[1]] <- as.integer(x+1-1)
 object_size(y)
 ```
 
+## Profiling Memory: Pryr
+
+The *mem_change()* function helps you to figure out the size of an object
+
+```{r eval=TRUE}
+myf <- function() {
+  x<- 1:1e6
+  function() 10
+}
+mem_change( z <- myf() )
+```
+
 ## Profiling Memory: Lineprof
 
 Lineprof package can be installed with:

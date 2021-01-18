@@ -304,5 +304,6 @@ cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
 * http://adv-r.had.co.nz/Profiling.html#vectorise
 * http://adv-r.had.co.nz/Functionals.html#functionals
 * [Pi vectorization](https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/)
+* Advanced R, Hadley Wickham, Taylor & Francis Group
 
 [Return to Index](index.html)

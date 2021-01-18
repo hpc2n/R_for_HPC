@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.56    0.00    0.70</pre>
+##    0.50    0.03    0.67</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.00    0.00    0.02</pre>
+##    0.01    0.00    0.02</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   12.66    1.39   14.92</pre>
+##   11.29    0.00   11.33</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.55    0.00    0.58</pre>
+##     0.5     0.0     0.5</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -212,7 +212,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.05    0.06    0.11</pre>
+##    0.08    0.00    0.08</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
 
@@ -221,7 +221,7 @@ dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.01    0.00    0.02</pre>
+##    0.03    0.00    0.03</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -238,12 +238,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    3.93    0.04    4.02</pre>
+##    4.04    0.04    4.08</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.15    0.14    2.29</pre>
+##    2.11    0.00    2.11</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -280,12 +280,12 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 <pre class = 'prettyprint lang-r'>bench</pre>
 
 <pre >## Unit: milliseconds
-##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 255.4114 276.3613 302.5446 289.0046 315.6180  469.0859   100
-##  sim.comp0(size) 720.5050 765.2745 810.8462 787.5327 818.4017 1513.5423   100
-##  sim.comp1(size) 309.4759 356.9135 393.5792 376.2988 401.6328  684.2891   100
-##  sim.comp2(size) 248.0054 276.2099 302.4484 290.3236 307.9876  543.0163   100
-##  sim.comp3(size) 240.2071 265.3214 291.3159 284.4010 305.2086  513.7683   100</pre>
+##             expr      min       lq     mean   median       uq      max neval
+##        sim(size) 237.7084 250.5822 267.6501 265.9017 277.6949 453.5340   100
+##  sim.comp0(size) 684.8836 718.9770 743.6581 732.0882 751.8927 968.0359   100
+##  sim.comp1(size) 307.7929 336.9552 355.6207 346.8363 357.3759 617.2748   100
+##  sim.comp2(size) 235.7265 248.5983 267.2683 263.6586 276.9334 420.8839   100
+##  sim.comp3(size) 236.9328 246.2500 263.7782 260.5672 275.1258 357.8426   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -307,8 +307,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr     min       lq     mean   median       uq      max neval
-##  sim(size) 243.744 274.0863 295.8117 288.9071 307.6411 432.7953   100</pre>
+##       expr      min       lq     mean   median       uq      max neval
+##  sim(size) 234.1098 245.3683 263.8185 259.9798 279.2749 413.7556   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
 
@@ -414,6 +414,7 @@ cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &q
 <li><a href='http://adv-r.had.co.nz/Profiling.html#vectorise' title=''>http://adv-r.had.co.nz/Profiling.html#vectorise</a></li>
 <li><a href='http://adv-r.had.co.nz/Functionals.html#functionals' title=''>http://adv-r.had.co.nz/Functionals.html#functionals</a></li>
 <li><a href='https://helloacm.com/r-programming-tutorial-how-to-compute-pi-using-monte-carlo-in-r/' title=''>Pi vectorization</a></li>
+<li>Advanced R, Hadley Wickham, Taylor &amp; Francis Group</li>
 </ul>
 
 <p><a href='index.html' title=''>Return to Index</a></p></article></slide>

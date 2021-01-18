@@ -4,3 +4,6 @@
 .Ruserdata
 ./Rprof.out
 Images/*xcf
+Rprof-mem.out
+Rprof.out
+Profiling_files/figure-html/unnamed-chunk-13-1.png
