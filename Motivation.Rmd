@@ -49,7 +49,6 @@ Now, look at the performance using 2 cores:
 ```{r}
 cl <- makeCluster(2)
 registerDoParallel(cl)
-
 ptime <- system.time({
     r <- foreach(icount(trials), .combine=cbind) %dopar% {
         ind <- sample(100,100, replace=TRUE)
@@ -57,7 +56,6 @@ ptime <- system.time({
         coefficients(result1)
     }
 })[3]
-
 ptime
 stopCluster(cl)
 ```
@@ -95,19 +93,19 @@ stopCluster(cl)
 
 ## Is parallel processing always the best alternative?
 
-the message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.
+The message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.
 
 ## Machine Learning models
 
-![](Images/decision-trees.png){width=700px}
+![](Images/decision-trees.png){width=800px}
 
 ## Machine Learning models
 
-![](Images/decision-trees-2.png){width=700px}
+![](Images/decision-trees-2.png){width=800px}
 
 ## Machine Learning models
 
-![](Images/cross-val.png){width=700px}
+![](Images/cross-val.png){width=800px}
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

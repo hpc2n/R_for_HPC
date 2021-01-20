@@ -122,47 +122,158 @@ slide:not(.current) .plotly.html-widget{
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Desktop machine vs. HPC architectures</h2></hgroup><article  id="desktop-machine-vs.-hpc-architectures">
+<slide class=""><hgroup><h2>Desktop PC vs. HPC architectures</h2></hgroup><article  id="desktop-pc-vs.-hpc-architectures">
 
 <img width="700px" src='Images/kebne_arch.png' title=''/>
 
+</article></slide><slide class=""><hgroup><h2>Using R in HPC</h2></hgroup><article  id="using-r-in-hpc">
+
+<p>There are several versions of R installed on Kebnekaise</p>
+
+<pre class = 'prettyprint lang-r'>&gt;ml spider R
+     Versions:
+        R/3.3.1
+        R/3.4.4-X11-20180131
+        R/3.5.1-Python-2.7.15
+        R/3.5.1
+        R/3.6.0
+        R/3.6.2
+        R/4.0.0
+        
+&gt;ml spider R/3.6.0   #search for the modules needed by R
+  You will need to load all module(s) on any one of the lines below before the &quot;R/3.6.0&quot; 
+      GCC/8.2.0-2.31.1  OpenMPI/3.1.3</pre>
+
+</article></slide><slide class=""><hgroup><h2>Using R in HPC</h2></hgroup><article  id="using-r-in-hpc-1">
+
+<pre class = 'prettyprint lang-r'>&gt;R --help
+
+Usage: R [options] [&lt; infile] [&gt; outfile]
+   or: R CMD command [arguments]
+
+Start R, a system for statistical computation and graphics, with the
+specified options, or invoke an R tool via the &#39;R CMD&#39; interface.
+
+Options:
+  -h, --help            Print short help message and exit
+  --version             Print version info and exit
+  --encoding=ENC        Specify encoding to be used for stdin
+  --encoding ENC
+  RHOME         Print path to R home directory and exit
+  --save                Do save workspace at the end of the session
+  --no-save             Don&#39;t save it
+  --no-environ          Don&#39;t read the site and user environment files</pre>
+
+</article></slide><slide class=""><hgroup><h2>Adding your own packages in R</h2></hgroup><article  id="adding-your-own-packages-in-r">
+
+<ul>
+<li><a href='https://www.hpc2n.umu.se/resources/software/user_installed/r' title=''>https://www.hpc2n.umu.se/resources/software/user_installed/r</a></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Running serial jobs</h2></hgroup><article  id="running-serial-jobs">
+
+<img width="750px" src='Images/using-r-hpc-serial.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Running your script</h2></hgroup><article  id="running-your-script">
+
+<ul>
+<li>Transfer your files to Kebnekaise</li>
+<li>Submit your job with: sbatch job.sh</li>
+<li>In case sbatch complains about the DOS format use the command:</li>
+</ul>
+
+<p><strong>dos2unix job.sh</strong></p>
+
+<p>before submitting your job.</p>
+
+<ul>
+<li>More information: <a href='https://www.hpc2n.umu.se/resources/software/r' title=''>https://www.hpc2n.umu.se/resources/software/r</a></li>
+</ul>
+
 </article></slide><slide class=""><hgroup><h2>Running several independent jobs</h2></hgroup><article  id="running-several-independent-jobs">
+
+<p>One can use <strong>job arrays</strong> option in SLURM to run independent instances of a program:</p>
+
+<pre class = 'prettyprint lang-r'>#!/bin/bash
+#SBATCH -A Project_ID
+#Asking for 10 min.
+#SBATCH -t 00:12:00
+#SBATCH --array=1-28
+##Writing the output and error files
+#SBATCH --output=Array_test.%A_%a.out
+#SBATCH --error=Array_test.%A_%a.error
+
+ml GCC/8.2.0-2.31.1  OpenMPI/3.1.3
+ml R/3.6.0
+
+R --no-save --no-restore -f script.R</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel packages</h2></hgroup><article  id="parallel-packages">
 
-<p>A common set of instructions to use parallel capabilities of some packages</p>
+<p>Some packages like BLAS/LAPACK have an implicit parallelization layer that can be activated by setting a number of threads.</p>
+
+<p>Other packages (doParallel, parallel, doMC, doMPI, doFuture) use a common set of instructions to use parallel capabilities as follows:</p>
 
 <pre class = 'prettyprint lang-r'>library(&quot;package-name&quot;)
 
 cl &lt;- makeCluster(NumberofCores)
-registerDoParallel(cl)
+
+register_cluster(cl)
+
 ... #code to be run in parallel mode
+
 stopCluster(cl)</pre>
 
-</article></slide><slide class=""><hgroup><h2>Parallel packages examples</h2></hgroup><article  id="parallel-packages-examples">
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples">
 
-<p><strong>doParallel</strong> package</p>
+<p>the <strong>foreach</strong> package is used for executing loops:</p>
 
-<pre class = 'prettyprint lang-r'>library(doParallel)
+<pre class = 'prettyprint lang-r'>library(foreach)
+r &lt;- foreach(icount(trials), .combine=cbind) %do% {
+      ind &lt;- sample(100,100, replace=TRUE)
+      result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+      coefficients(result1)
+}</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-1">
+
+<p><strong>doParallel</strong> is a backend parallel package for executing code in parallel mode:</p>
+
+<pre class = 'prettyprint lang-r'>library(doParallel)  #using &quot;doParallel&quot; package
+cl &lt;- makeCluster(2)
+registerDoParallel(cl)
+getDoParWorkers()    #this line tells the nr. of workers</pre>
+
+<pre >## [1] 2</pre>
+
+<pre class = 'prettyprint lang-r'>getDoParName()       #this line tell the type of cluster</pre>
+
+<pre >## [1] &quot;doParallelSNOW&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-2">
+
+<p><strong>doParallel</strong> can be used to execute <strong>foreach</strong> loops in parallel:</p>
+
+<pre class = 'prettyprint lang-r'>library(doParallel)  #using &quot;doParallel&quot; package
 cl &lt;- makeCluster(2)
 registerDoParallel(cl)
 
-ptime &lt;- system.time({
-    r &lt;- foreach(icount(trials), .combine=cbind) %dopar% {
-        ind &lt;- sample(100,100, replace=TRUE)
-        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
-        coefficients(result1)
-    }
-})[3]
+r &lt;- foreach(icount(trials), .combine=cbind) %dopar% {
+      ind &lt;- sample(100,100, replace=TRUE)
+      result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+      coefficients(result1)
+}
 
-ptime
 stopCluster(cl)</pre>
 
-</article></slide><slide class=""><hgroup><h2>Parallel packages examples</h2></hgroup><article  id="parallel-packages-examples-1">
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-3">
 
 <p><strong>parallel</strong> package</p>
 
-<pre class = 'prettyprint lang-r'>library(parallel)  #using parallel package
+<pre class = 'prettyprint lang-r'>library(parallel)  #using &quot;parallel&quot; package
+
 detectCores()
 P &lt;- detectCores(logical = FALSE)  #only physical cores
 
@@ -174,6 +285,44 @@ cl &lt;- makeCluster(P)   #distribute the work across cores
 clusterExport(cl, &quot;mydata&quot;)
 res &lt;- clusterApply(cl, 1:N, fun = myfunc)
 stopCluster(cl)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Running R in parallel mode</h2></hgroup><article  id="running-r-in-parallel-mode">
+
+<img width="750px" src='Images/using-r-hpc-parallel.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Random Numbers in parallel simulations</h2></hgroup><article  id="random-numbers-in-parallel-simulations">
+
+<p>The following simulations <em>res1</em> and <em>res2</em> do not give reproducible results:</p>
+
+<pre class = 'prettyprint lang-r'>library(doParallel)
+cl &lt;- makeCluster(2)
+registerDoParallel(cl)
+set.seed(1)
+res1 &lt;- foreach(n = rep(2, 3), .combine=rbind) %dopar% rnorm(n)
+
+set.seed(1)
+res2 &lt;- foreach(n = rep(2, 3), .combine=rbind) %dopar% rnorm(n)
+stopCluster(cl)
+identical(res1,res2)</pre>
+
+<pre >## [1] FALSE</pre>
+
+</article></slide><slide class=""><hgroup><h2>Random Numbers in parallel simulations</h2></hgroup><article  id="random-numbers-in-parallel-simulations-1">
+
+<p>For reproducible parallel simulation a RNG package such as <strong>doRNG</strong> is recommended:</p>
+
+<pre class = 'prettyprint lang-r'>library(doRNG)
+cl &lt;- makeCluster(2)
+registerDoParallel(cl)
+registerDoRNG(1)
+res3 &lt;- foreach(n = rep(2, 3), .combine=rbind) %dopar% rnorm(n)
+
+set.seed(1)
+res4 &lt;- foreach(n = rep(2, 3), .combine=rbind) %dopar% rnorm(n)
+stopCluster(cl)
+identical(res3,res4)</pre>
+
+<pre >## [1] TRUE</pre>
 
 </article></slide><slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel">
 
@@ -219,23 +368,25 @@ Garbage collection 1196 = 1128+50+18 (level 0) ...
 Ncells  5850436 312.5    9776540 522.2  9776540 522.2
 Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 
-</article></slide><slide class=""><hgroup><h2>Using R at HPC2N</h2></hgroup><article  id="using-r-at-hpc2n">
+<p>the time to execute <strong>myfunc</strong> in parallel mode increases drastically.</p>
 
-<p>There are several versions of R installed on Kebnekaise</p>
+</article></slide><slide class=""><hgroup><h2>Good practices</h2></hgroup><article  id="good-practices">
 
-<pre class = 'prettyprint lang-r'>&gt;ml spider R
-     Versions:
-        R/3.3.1
-        R/3.4.4-X11-20180131
-        R/3.5.1-Python-2.7.15
-        R/3.5.1
-        R/3.6.0
-        R/3.6.2
-        R/4.0.0
-        
-&gt;ml spider R/3.6.0
-    You will need to load all module(s) on any one of the lines below before the &quot;R/3.6.0&quot; module is available to load.
-      GCC/8.2.0-2.31.1  OpenMPI/3.1.3</pre>
+<ul>
+<li>Use the login nodes for lightweight tasks</li>
+<li>Profile your code</li>
+<li>Monitoring your job on the fly:</li>
+</ul>
+
+<p>If you run your script on multiple cores, you can monitor the CPU and memory usage in real time, use the following command on the terminal:</p>
+
+<p><strong>job-usage &ldquo;job_ID&rdquo;</strong></p>
+
+<p>Then copy and paste the URL on your local web browser.</p>
+
+</article></slide><slide class=""><hgroup><h2>Good practices</h2></hgroup><article  id="good-practices-1">
+
+<img width="750px" src='Images/job-usage.png' title=''/>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 
@@ -245,6 +396,7 @@ Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 <li>R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.</li>
 <li><a href='http://adv-r.had.co.nz/memory.html' title=''>http://adv-r.had.co.nz/memory.html</a></li>
 <li><a href='https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution' title=''>https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution</a></li>
+<li><a href='https://rawgit.com/PPgp/useR2017public/master/tutorial.html' title=''>https://rawgit.com/PPgp/useR2017public/master/tutorial.html</a></li>
 </ul>
 
 <p><a href='index.html' title=''>Return to Index</a></p></article></slide>

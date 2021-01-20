@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.50    0.03    0.67</pre>
+##    0.49    0.00    0.54</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.01    0.00    0.02</pre>
+##    0.02    0.00    0.01</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   11.29    0.00   11.33</pre>
+##   13.47    0.46   14.86</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##     0.5     0.0     0.5</pre>
+##    0.68    0.00    0.75</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -212,7 +212,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.08    0.00    0.08</pre>
+##    0.06    0.06    0.14</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
 
@@ -221,7 +221,7 @@ dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.03    0.00    0.03</pre>
+##    0.06    0.00    0.06</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -238,12 +238,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    4.04    0.04    4.08</pre>
+##    4.41    0.09    5.19</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.11    0.00    2.11</pre>
+##    2.20    0.10    2.36</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -280,12 +280,12 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 <pre class = 'prettyprint lang-r'>bench</pre>
 
 <pre >## Unit: milliseconds
-##             expr      min       lq     mean   median       uq      max neval
-##        sim(size) 237.7084 250.5822 267.6501 265.9017 277.6949 453.5340   100
-##  sim.comp0(size) 684.8836 718.9770 743.6581 732.0882 751.8927 968.0359   100
-##  sim.comp1(size) 307.7929 336.9552 355.6207 346.8363 357.3759 617.2748   100
-##  sim.comp2(size) 235.7265 248.5983 267.2683 263.6586 276.9334 420.8839   100
-##  sim.comp3(size) 236.9328 246.2500 263.7782 260.5672 275.1258 357.8426   100</pre>
+##             expr      min       lq     mean   median       uq       max neval
+##        sim(size) 266.3246 290.8260 316.4410 305.5590 322.1849  677.8928   100
+##  sim.comp0(size) 780.1914 808.8148 860.5536 832.7884 878.6168 1201.7101   100
+##  sim.comp1(size) 374.4315 387.3631 411.8877 397.7003 415.9079  728.9432   100
+##  sim.comp2(size) 259.6856 292.4952 313.0967 305.8999 320.1057  484.4917   100
+##  sim.comp3(size) 265.9803 289.2273 313.2671 302.5392 318.9922  518.8912   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -307,10 +307,29 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr      min       lq     mean   median       uq      max neval
-##  sim(size) 234.1098 245.3683 263.8185 259.9798 279.2749 413.7556   100</pre>
+##       expr      min      lq     mean   median       uq      max neval
+##  sim(size) 270.4479 293.384 317.0864 308.0404 327.3448 481.5168   100</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise">
+</article></slide><slide class=""><hgroup><h2>Rcpp package</h2></hgroup><article  id="rcpp-package">
+
+<p><strong>Rcpp</strong> package allows you to write your code in C++ that could be called within a R script:</p>
+
+<pre class = 'prettyprint lang-r'>library(Rcpp)</pre>
+
+<pre class = 'prettyprint lang-r'>cppFunction(&#39;int mul(int a, int b, int c) {
+  int mul = a * b * c;
+  return mul;
+}&#39;)
+mul</pre>
+
+<pre >## function (a, b, c) 
+## .Call(&lt;pointer: 0x00000000712815a0&gt;, a, b, c)</pre>
+
+<pre class = 'prettyprint lang-r'>mul(2,4,6)</pre>
+
+<pre >## [1] 48</pre>
+
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only">
 
 <h3>Calling external functions</h3>
 
@@ -333,7 +352,7 @@ pival = 4.0d0*hits/(1.0*n)
 write(6,*) pival,n
 end subroutine pifunc</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-1">
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-1">
 
 <h3>Calling external functions</h3>
 
@@ -347,7 +366,7 @@ dyn.load(&quot;pi.so&quot;)
 is.loaded(&quot;pifunc&quot;)
 .Fortran(&quot;pifunc&quot;, n = as.integer(size))</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-2">
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-2">
 
 <h3>Calling external functions</h3>
 
@@ -357,7 +376,7 @@ is.loaded(&quot;pifunc&quot;)
 bench &lt;- microbenchmark(sim(size), .Fortran(&quot;pifunc&quot;, n = as.integer(size)))
 bench</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-3">
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-3">
 
 <h3>BLAS/LAPACK libraries</h3>
 
@@ -372,7 +391,7 @@ Running under: Ubuntu 16.04.6 LTS
 Matrix products: default
 BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-4">
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-4">
 
 <h3>BLAS/LAPACK libraries</h3>
 
@@ -389,7 +408,7 @@ for (i in 1:nsim) {
 } ; times &lt;- summa/nsim
 cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
 
-</article></slide><slide class=""><hgroup><h2>Advanced Topics (Kebnekaise):</h2></hgroup><article  id="advanced-topics-kebnekaise-5">
+</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-5">
 
 <h3>BLAS/LAPACK libraries</h3>
 

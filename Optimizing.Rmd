@@ -188,7 +188,25 @@ bench
 ```
 
 
-## Advanced Topics (Kebnekaise): 
+
+## Rcpp package
+
+**Rcpp** package allows you to write your code in C++ that could be called within a R script:
+
+```{r eval=TRUE, warning=FALSE, message=FALSE}
+library(Rcpp)
+```
+
+```{r eval=TRUE}
+cppFunction('int mul(int a, int b, int c) {
+  int mul = a * b * c;
+  return mul;
+}')
+mul
+mul(2,4,6)
+```
+
+## Following cases work on Kebnekaise only: 
 
 ### Calling external functions
 
@@ -213,7 +231,9 @@ write(6,*) pival,n
 end subroutine pifunc
 ```
 
-## Advanced Topics (Kebnekaise): 
+
+
+## Following cases work on Kebnekaise only: 
 
 ### Calling external functions
 
@@ -233,7 +253,7 @@ is.loaded("pifunc")
 
 
 
-## Advanced Topics (Kebnekaise):
+## Following cases work on Kebnekaise only:
 
 ### Calling external functions
 
@@ -245,7 +265,7 @@ bench <- microbenchmark(sim(size), .Fortran("pifunc", n = as.integer(size)))
 bench
 ```
 
-## Advanced Topics (Kebnekaise):
+## Following cases work on Kebnekaise only:
 ### BLAS/LAPACK libraries
 
 On Kebnekaise the OpenBLAS libraries are available:
@@ -261,7 +281,7 @@ Matrix products: default
 BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so
 ```
 
-## Advanced Topics (Kebnekaise):
+## Following cases work on Kebnekaise only:
 ### BLAS/LAPACK libraries
 
 The number of threads can be controlled with the *RhpcBLASctl* package and setting the number of threads:
@@ -279,7 +299,7 @@ for (i in 1:nsim) {
 cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
 ```
 
-## Advanced Topics (Kebnekaise):
+## Following cases work on Kebnekaise only:
 ### BLAS/LAPACK libraries
 
 ```{r eval=FALSE}
