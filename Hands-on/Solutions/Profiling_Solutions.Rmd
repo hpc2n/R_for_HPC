@@ -1,0 +1,126 @@
+---
+title: "Solutions"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+date: "Feb., 2021"
+output: html_document
+---
+
+## 1.
+
+```{r eval=TRUE}
+library("tictoc")
+
+tic.clearlog()
+tic("Total execution time")
+
+tic("time: var init")
+A <- matrix(1.0, 5000, 5000)
+toc(log = TRUE)
+
+sumcol <- function(B) {
+
+tic("time: var init func")
+    l <- ncol(B)  #obtain the number of columns
+  colsm <- rep(0,l) #create a vector to save the sums
+toc(log = TRUE)
+
+tic("time: for loop")
+  for(j in 1:l){  
+    s <- 0
+    for(i in 1:l){
+      s <- s + B[i,j]
+    }
+    colsm[j] <- s
+  }
+toc(log = TRUE)
+  return(colsm)
+}
+
+res1 <- sumcol(A)
+
+toc(log = TRUE)
+logfile <- tic.log()
+logfile
+```
+
+# 2. 
+
+In this problem you will use common packages to profile R code. Replace the *FIXME* strings
+with appropriate R code.
+
+Given the matrix A of ones with a size of 5000x5000:
+
+```{r eval=TRUE}
+A <- matrix(1.0, 5000, 5000)
+```
+
+compare the profiling results of the following functions in a) and b).
+
+a) the user function *sumcol* computes the sum of the elements by columns
+
+
+```{r eval=TRUE}
+sumcol <- function(B) {
+   l <- ncol(B)  #obtain the number of columns
+   colsm <- rep(0,l) #create a vector to save the sums
+   for(j in 1:l){  
+      s <- 0
+      for(i in 1:l){
+          s <- s + B[i,j]
+      }
+      colsm[j] <- s
+   }
+   return(colsm)
+}
+
+Rprof("Rprofa.out")          #Save the Rprof output in a filename called Rprofa.out
+res1 <- sumcol(A)
+Rprof(NULL)
+
+summaryRprof("Rprofa.out")   #view the profiling's summary 
+```
+
+
+b) the R built-in *colSums* function for computing the sums of elements by columns
+
+```{r eval=TRUE}
+Rprof("Rprofb.out")
+res2 <- colSums(A)
+Rprof(NULL)
+summaryRprof("Rprofb.out") 
+```
+
+
+* Are the performances of the two functions similar? No
+* The two functions do the same calculation, why the performaces could differ? The user-defined
+function *sumcol* performs plenty of calls to R functions behind scenes.
+
+# 3.
+
+**Challenge:** Do a benchmarking of the previous two functions by using rbenchmark
+and microbenchmark packages:
+
+```{r eval=TRUE}
+#initialize the matrix A and set function sumcol
+A <- matrix(1.0, 5000, 5000)
+sumcol <- function(B) {
+   l <- ncol(B)  #obtain the number of columns
+   colsm <- rep(0,l) #create a vector to save the sums
+   for(j in 1:l){  
+      s <- 0
+      for(i in 1:l){
+          s <- s + B[i,j]
+      }
+      colsm[j] <- s
+   }
+   return(colsm)
+}
+
+library(rbenchmark)
+res3 <- benchmark(sumcol(A), colSums(A), replications=10)
+res3 
+
+library(microbenchmark)
+res4 <- microbenchmark(sumcol(A), colSums(A), times=10)
+res4
+```
