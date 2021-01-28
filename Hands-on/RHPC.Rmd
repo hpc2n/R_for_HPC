@@ -1,0 +1,72 @@
+---
+title: "Exercises"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+date: "Feb., 2021"
+output: html_document
+---
+
+## 1. Exercise
+
+Take a look at the code for the credit bank data set in the script **parallel.R** and also
+at the **job_parallel.sh** batch script. Set the number of cores you want to use in both
+scripts first to 1 and then increase the number up to 12 and get some timings. 
+
+Upload the working folder to Kebnekaise and run the simulation. Monitor the timings for 
+the simulations. You may use the *job-usage* tool on Kebnekaise. Replace the *FIXME* 
+strings with appropriate code.
+
+## 2. Exercise
+ 
+* The following *foreach* loop divides each element in a row by the rows mean. 
+Analyze the timings with *tictoc* for 1 and 2 cores:
+
+
+```{r eval=TRUE}
+library(doParallel)
+library(tictoc)
+A <- matrix(1.0, 5000, 2000)
+cl <- makeCluster(*FIXME*)        
+registerDoParallel(cl)
+
+tic()
+res1 <- foreach(i=1:nrow(A), .combine='rbind') %dopar% (A[i,]/mean(A[i,])) 
+toc()
+
+stopCluster(cl)
+```
+
+
+
+* What are the timings when one goes from 1 core to 2 cores? Does the performance improve considerably upon increasing the number of cores? How could that be explained?
+
+## 3. Exercise
+
+* Obtain the timings of the *max.eig()* function, which computes the eigenvalues of a 
+matrix of *NxN*, by using a different number of cores and using the **foreach** function. *N* can go from 1 to 700. Replace *FIXME* strings:
+
+* How is the performance of the **foreach** function with 1 core compared with that of the **sapply** function (N=700) alternative?
+
+```{r eval=TRUE}
+library(doParallel)
+library(tictoc)
+
+#Adapted from: https://rstudio-pubs-static.s3.amazonaws.com/181635_8d565543c7ce4218b80345adaa11ea58.html
+max.eig <- function(N, sigma) {
+    d <- matrix(rnorm(N**2, sd = sigma), nrow = N)
+    E <- eigen(d)$values
+    abs(E)[[1]]
+}
+
+cl <- makeCluster(*FIXME*)
+registerDoParallel(cl)
+tic()
+res2 <- foreach(n = 1:700, .combine='rbind') %dopar% max.eig(n, 1)
+toc()
+stopCluster(cl)
+```
+
+```{r eval=TRUE}
+tic()
+res3 <- sapply(1:700, function(n) {max.eig(n, 1)})
+toc()
+```
