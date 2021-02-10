@@ -67,3 +67,81 @@ tic()
 res3 <- sapply(1:700, function(n) {max.eig(n, 1)})
 toc()
 ```
+
+## 4. Exercise (Challenge)
+
+This exercise was inspired by the Stackoverflow case 
+(https://stackoverflow.com/questions/31575585/shared-memory-in-parallel-foreach-in-r)
+where it was observed that memory increased when using **foreach** in parallel mode.
+Prepare a R script with the following code which uses 2 cores (call the script
+script1.R for instance):
+
+
+```{r eval=TRUE}
+library(parallel)
+library(foreach)
+library(bigmemory)
+library(doParallel)
+
+#create a matrix of size 1GB aproximatelly
+c<-matrix(runif(10000^2),10000,10000)
+#convert it to bigmatrix
+x<-as.big.matrix(c)
+# get a description of the matrix
+mdesc <- describe(x)
+
+p <- detectCores(logical = FALSE) # only physical cores
+cl <- makeCluster(2)
+registerDoParallel(cl)
+clusterEvalQ(cl, library(bigmemory))
+out<-foreach(linID = 1:10, .combine=c) %dopar% {
+  m <- attach.big.matrix(mdesc)
+  #dummy expression to test data aquisition
+  Sys.sleep(190)
+  print(summary(m))
+}
+stopCluster(cl)
+```
+
+Now, use the **job.sh** template in this folder to submit your script to the queue.
+Don't forget to replace the project name and the reservation queue. 
+Use the job_ID (number you get when submitting the job with **sbatch job.sh**)
+to get a URL with  the command **job-usage job_ID**. Copy/paste this URL to 
+your local browser and wait ~5min. to see the statistics. Don't close your browser.
+
+Repeat the process above and create a second R script (maybe called script2.R) with
+the code below.
+
+```{r eval=TRUE}
+library(parallel)
+library(foreach)
+library(bigmemory)
+library(doParallel)
+
+#create a matrix of size 1GB aproximatelly
+c<-matrix(runif(10000^2),10000,10000)
+#convert it to bigmatrix
+x<-as.big.matrix(c)
+# get a description of the matrix
+mdesc <- describe(x)
+
+p <- detectCores(logical = FALSE) # only physical cores
+cl <- makeCluster(2)
+registerDoParallel(cl)
+clusterEvalQ(cl, library(bigmemory))
+out<-foreach(linID = 1:10, .combine=c) %dopar% {
+  m <- attach.big.matrix(mdesc)
+  #dummy expression to test data aquisition
+  c[1,1] <- 0.3
+  Sys.sleep(190)
+  print(summary(m))
+}
+stopCluster(cl)
+```
+
+Modify the **job.sh** batch script, submit it to the queue. Then, get a URL
+with **job-usage job_ID** tool and visualize the output in your local machine.
+
+Compare the graphical outputs of both simulations (on your web browser).
+What are the differences? What could be the source of that?
+
