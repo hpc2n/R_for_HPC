@@ -44,7 +44,11 @@ stopCluster(cl)
 * Obtain the timings of the *max.eig()* function, which computes the eigenvalues of a 
 matrix of *NxN*, by using a different number of cores and using the **foreach** function. *N* can go from 1 to 700. Replace *FIXME* strings:
 
-* How is the performance of the **foreach** function with 1 core compared with that of the **sapply** function (N=700) alternative?
+
+Note: If you have a PC with more than 1 core you can try the following code for the
+*doParallel* simulation, otherwise you can copy/paste this code into a file (called maybe script0.R)
+in your account on Kebnekaise. Then, use the *job.sh* batch script (with the proper modifications)
+to submit your job to the queue with *sbatch job.sh*:
 
 ```{r eval=TRUE}
 library(doParallel)
@@ -65,11 +69,15 @@ toc()
 stopCluster(cl)
 ```
 
+
+* How is the performance of the **foreach** function with 1 core compared with that of the **sapply** function (N=700) alternative:
+
 ```{r eval=TRUE}
 tic()
 res3 <- sapply(1:700, function(n) {max.eig(n, 1)})
 toc()
 ```
+
 
 ## 4. Exercise (Challenge)
 
