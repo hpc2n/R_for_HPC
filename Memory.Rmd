@@ -155,6 +155,7 @@ The *mem_change()* function helps you to figure out the size of an object
 ```{r eval=TRUE}
 myf <- function() {
   x<- 1:1e6
+  10
 }
 mem_change( z <- myf() )
 ```
