@@ -155,7 +155,6 @@ The *mem_change()* function helps you to figure out the size of an object
 ```{r eval=TRUE}
 myf <- function() {
   x<- 1:1e6
-  function() 10
 }
 mem_change( z <- myf() )
 ```
@@ -249,8 +248,7 @@ while (start <= nrow(bm)) {
 
 ## Summary
 
-* We studied some methods to monitor memory usage: **Rprof**, **gc**, **object_size**
-and **mem_change**
+* We studied some methods to monitor memory usage: **Rprof** and **gc**
 
 * One can also use the **pryr** and **lineprof** packages to have more detailed information, for
 instance memory changes upon creating objects and data duplication

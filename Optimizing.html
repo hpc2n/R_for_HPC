@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.55    0.00    0.62</pre>
+##    0.64    0.00    0.73</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.02    0.00    0.02</pre>
+##    0.02    0.00    0.01</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   10.63    0.00   10.62</pre>
+##   11.89    0.02   12.03</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +201,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.52    0.00    0.51</pre>
+##    0.59    0.00    0.64</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -213,7 +213,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.06    0.00    0.07</pre>
+##    0.06    0.00    0.06</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames with caution</h2></hgroup><article  id="using-data-frames-with-caution-1">
 
@@ -239,12 +239,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    3.67    0.03    3.70</pre>
+##    4.55    0.11    5.04</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    1.98    0.08    2.06</pre>
+##    2.08    0.20    2.31</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -281,12 +281,12 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 <pre class = 'prettyprint lang-r'>bench</pre>
 
 <pre >## Unit: milliseconds
-##             expr      min       lq     mean   median       uq      max neval
-##        sim(size) 235.4678 258.3764 270.5321 266.0941 279.2378 370.6179   100
-##  sim.comp0(size) 696.2082 730.7676 750.1460 746.4116 754.4695 930.2607   100
-##  sim.comp1(size) 307.2009 343.6837 354.2565 354.0968 361.9439 457.0561   100
-##  sim.comp2(size) 233.2767 257.8897 270.5945 267.9493 279.4200 382.6921   100
-##  sim.comp3(size) 229.6108 257.0474 271.4467 267.8268 281.6398 411.9605   100</pre>
+##             expr      min       lq     mean   median       uq       max neval
+##        sim(size) 241.4763 273.9851 296.8623 291.7767 300.8621  554.6662   100
+##  sim.comp0(size) 755.3856 785.8952 829.0447 802.1981 865.9860 1095.8575   100
+##  sim.comp1(size) 343.2358 369.8697 383.6516 377.2866 387.9157  495.3565   100
+##  sim.comp2(size) 254.4773 273.7790 295.5442 288.7594 301.8570  485.5084   100
+##  sim.comp3(size) 251.6047 273.1338 295.8813 286.4124 299.0225  493.9180   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -308,8 +308,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr      min       lq     mean   median       uq      max neval
-##  sim(size) 250.1181 259.2489 274.2286 275.7228 284.8414 403.7465   100</pre>
+##       expr     min       lq     mean   median       uq      max neval
+##  sim(size) 238.346 270.4339 297.3274 284.6329 301.6342 707.2396   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rcpp package</h2></hgroup><article  id="rcpp-package">
 
