@@ -191,7 +191,6 @@ then we can benchmark our function *sim()*
 library(rbenchmark)
 size <- 500000
 bench <- benchmark(sim(size), replications=10)
-bench 
 ```
 
 ## Rbenchmark
@@ -224,7 +223,21 @@ bench2
 
 in this case we obtain more statistics of the benchmarking process like the *mean*, *min*, *max*, ... 
 
+## Summary
 
+* Timing your R code is useful to see what parts require optimization or a better package. 
+
+* **system.time** and **tic-toc** will give you a single evaluation of the time taken by some R code
+
+* **rbenchmark**, **microbenchmark** functions will give statistics over independent replicas of the
+  code
+
+
+* More useful information from profiling functions will be obtained if one uses functions to
+  enclose independent tasks in your code (remember *pow2*, *runif* in the Pi calculation)
+
+* Once you know what are the bottlenecks of your code, working on a few of the most expensive ones could
+  be more effective than working on many less significative functions
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

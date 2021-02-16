@@ -247,6 +247,16 @@ while (start <= nrow(bm)) {
 }
 ```
 
+## Summary
+
+* We studied some methods to monitor memory usage: **Rprof**, **gc**, **object_size**
+and **mem_change**
+
+* One can also use the **pryr** and **lineprof** packages to have more detailed information, for
+instance memory changes upon creating objects and data duplication
+
+* To save space one can use the **bigmemory** package which works with file handlers
+instead of the actual data
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

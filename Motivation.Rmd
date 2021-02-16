@@ -60,7 +60,6 @@ ptime
 stopCluster(cl)
 ```
 
-What are the differences between the codes?
 
 ## Parallel mode
 
@@ -95,17 +94,6 @@ stopCluster(cl)
 
 The message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.
 
-## Machine Learning models
-
-![](Images/decision-trees.png){width=800px}
-
-## Machine Learning models
-
-![](Images/decision-trees-2.png){width=800px}
-
-## Machine Learning models
-
-![](Images/cross-val.png){width=800px}
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

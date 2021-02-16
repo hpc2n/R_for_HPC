@@ -122,9 +122,9 @@ slide:not(.current) .plotly.html-widget{
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Performance improvement</h2></hgroup><article  id="performance-improvement">
+<slide class=""><hgroup><h2>Baseline</h2></hgroup><article  id="baseline">
 
-<p>There are some tricks you can follow in order to get a faster code, we will use our Pi function from the previous topic:</p>
+<p>There are some tricks you can follow in order to get a faster code, we will use our Pi function from the previous topic as our baseline:</p>
 
 <pre class = 'prettyprint lang-r'>sim &lt;- function(l) {
   c &lt;- rep(0,l); hits &lt;- 0
@@ -139,7 +139,7 @@ slide:not(.current) .plotly.html-widget{
    return(c)
 }</pre>
 
-</article></slide><slide class=""><hgroup><h2>Performance improvement</h2></hgroup><article  id="performance-improvement-1">
+</article></slide><slide class=""><hgroup><h2>Baseline</h2></hgroup><article  id="baseline-1">
 
 <p>the execution time of this function for 100,000 iterations is</p>
 
@@ -149,7 +149,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.49    0.00    0.54</pre>
+##    0.55    0.00    0.62</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +171,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.02    0.00    0.01</pre>
+##    0.02    0.00    0.02</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +188,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   13.47    0.46   14.86</pre>
+##   10.63    0.00   10.62</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,27 +201,28 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.68    0.00    0.75</pre>
+##    0.52    0.00    0.51</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
-</article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames">
+</article></slide><slide class=""><hgroup><h2>Using Data Frames with caution</h2></hgroup><article  id="using-data-frames-with-caution">
 
 <pre class = 'prettyprint lang-r'>data1 &lt;- rnorm(1E4*1000)
+dim(data1) &lt;- c(1E4,1000)
 dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.06    0.06    0.14</pre>
+##    0.06    0.00    0.07</pre>
 
-</article></slide><slide class=""><hgroup><h2>Using Data Frames</h2></hgroup><article  id="using-data-frames-1">
+</article></slide><slide class=""><hgroup><h2>Using Data Frames with caution</h2></hgroup><article  id="using-data-frames-with-caution-1">
 
 <pre class = 'prettyprint lang-r'>data1 &lt;- rnorm(1E4*1000)
 dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.06    0.00    0.06</pre>
+##    0.04    0.00    0.04</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -238,12 +239,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    4.41    0.09    5.19</pre>
+##    3.67    0.03    3.70</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.20    0.10    2.36</pre>
+##    1.98    0.08    2.06</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -280,12 +281,12 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 <pre class = 'prettyprint lang-r'>bench</pre>
 
 <pre >## Unit: milliseconds
-##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 266.3246 290.8260 316.4410 305.5590 322.1849  677.8928   100
-##  sim.comp0(size) 780.1914 808.8148 860.5536 832.7884 878.6168 1201.7101   100
-##  sim.comp1(size) 374.4315 387.3631 411.8877 397.7003 415.9079  728.9432   100
-##  sim.comp2(size) 259.6856 292.4952 313.0967 305.8999 320.1057  484.4917   100
-##  sim.comp3(size) 265.9803 289.2273 313.2671 302.5392 318.9922  518.8912   100</pre>
+##             expr      min       lq     mean   median       uq      max neval
+##        sim(size) 235.4678 258.3764 270.5321 266.0941 279.2378 370.6179   100
+##  sim.comp0(size) 696.2082 730.7676 750.1460 746.4116 754.4695 930.2607   100
+##  sim.comp1(size) 307.2009 343.6837 354.2565 354.0968 361.9439 457.0561   100
+##  sim.comp2(size) 233.2767 257.8897 270.5945 267.9493 279.4200 382.6921   100
+##  sim.comp3(size) 229.6108 257.0474 271.4467 267.8268 281.6398 411.9605   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -307,8 +308,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr      min      lq     mean   median       uq      max neval
-##  sim(size) 270.4479 293.384 317.0864 308.0404 327.3448 481.5168   100</pre>
+##       expr      min       lq     mean   median       uq      max neval
+##  sim(size) 250.1181 259.2489 274.2286 275.7228 284.8414 403.7465   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rcpp package</h2></hgroup><article  id="rcpp-package">
 
@@ -331,7 +332,7 @@ mul</pre>
 
 </article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only">
 
-<h3>Calling external functions</h3>
+<h3>Calling external functions (Fortran)</h3>
 
 <pre class = 'prettyprint lang-r'>subroutine pifunc(n)
 implicit none
@@ -349,7 +350,6 @@ do i=1,n
    endif
 enddo
 pival = 4.0d0*hits/(1.0*n)
-write(6,*) pival,n
 end subroutine pifunc</pre>
 
 </article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-1">
@@ -362,11 +362,11 @@ end subroutine pifunc</pre>
 
 <pre class = 'prettyprint lang-r'>size &lt;- 100000
 
-dyn.load(&quot;pi.so&quot;)
+dyn.load(&quot;picalc&quot;)
 is.loaded(&quot;pifunc&quot;)
 .Fortran(&quot;pifunc&quot;, n = as.integer(size))</pre>
 
-</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-2">
+</article></slide><slide class=""><hgroup><h2>Following cases that run on Kebnekaise:</h2></hgroup><article  id="following-cases-that-run-on-kebnekaise">
 
 <h3>Calling external functions</h3>
 
@@ -374,57 +374,66 @@ is.loaded(&quot;pifunc&quot;)
 
 <pre class = 'prettyprint lang-r'>library(microbenchmark)
 bench &lt;- microbenchmark(sim(size), .Fortran(&quot;pifunc&quot;, n = as.integer(size)))
-bench</pre>
+bench
 
-</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-3">
+Unit: milliseconds
+                        expr        min         lq       mean     median         uq 
+          sim(size) 229.596323 234.312380 240.501156 236.034249 238.871773 316.289453
+ .Fortran(&quot;pifunc&quot;)   4.136534   4.155587   4.239279   4.188102   4.261413   5.747752</pre>
 
-<h3>BLAS/LAPACK libraries</h3>
+<p>Vectorized code performance was ~10 ms.</p>
 
-<p>On Kebnekaise the OpenBLAS libraries are available:</p>
+</article></slide><slide class=""><hgroup><h2>Following cases that run on Kebnekaise:</h2></hgroup><article  id="following-cases-that-run-on-kebnekaise-1">
 
-<pre class = 'prettyprint lang-r'>sessionInfo()
+<h3>Calling Julia functions</h3>
 
-R version 3.6.0 (2019-04-26)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.6 LTS
+<pre class = 'prettyprint lang-r'>ml GCC/8.2.0-2.31.1  OpenMPI/3.1.3; ml R/3.6.0; ml julia/1.1.0
+library(JuliaCall) #install.packages(&quot;JuliaCall&quot;)
+julia_setup()
+julia_command(&quot;
+function sim(l)
+  hits = 0
+  for i = 1:l
+    x = rand()*2 - 1
+    y = rand()*2 - 1
+    r = x*x + y*y
+    if r &lt; 1.0 
+      hits += 1
+    end
+  end
+  pi_partial = (hits/l)*4
+end&quot;)
+invisible(julia_call(&quot;sim&quot;, size))</pre>
 
-Matrix products: default
-BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so</pre>
+</article></slide><slide class=""><hgroup><h2>Following cases that run on Kebnekaise:</h2></hgroup><article  id="following-cases-that-run-on-kebnekaise-2">
 
-</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-4">
+<h3>Calling Julia functions</h3>
 
-<h3>BLAS/LAPACK libraries</h3>
+<pre class = 'prettyprint lang-r'>library(microbenchmark)
+bench &lt;- microbenchmark(sim(size), julia_call(&quot;sim&quot;, size))
+bench
 
-<p>The number of threads can be controlled with the <em>RhpcBLASctl</em> package and setting the number of threads:</p>
+Unit: microseconds
+                    expr        min         lq        mean     median         uq  
+               sim(size) 230284.183 237486.927 246621.8263 244825.215 250872.803
+ julia_call(&quot;sim&quot;, size)    400.051    426.745    490.8316    496.087    542.283</pre>
 
-<pre class = 'prettyprint lang-r'>library(RhpcBLASctl)
-n &lt;- 5000; nsim &lt;- 3                 #matrix size nxn; nr. independent simulations
-set.seed(123); summa &lt;- 0; x &lt;- 0; blas_set_num_threads(1)  #set the number of threads
-for (i in 1:nsim) {
-  m &lt;- matrix(rnorm(n^2), n); a &lt;- crossprod(m)   #random matrix and symmetrize it
-  timing &lt;- system.time({
-    x &lt;- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
-  })[3] ;  summa &lt;- summa + timing
-} ; times &lt;- summa/nsim
-cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
 
-</article></slide><slide class=""><hgroup><h2>Following cases work on Kebnekaise only:</h2></hgroup><article  id="following-cases-work-on-kebnekaise-only-5">
+<ul>
+<li><p>Profile/benchmark your initial code to have a baseline</p></li>
+<li><p>Some techniques that can help you to get a faster code are</p>
 
-<h3>BLAS/LAPACK libraries</h3>
-
-<pre class = 'prettyprint lang-r'>### Using 2 threads
-blas_set_num_threads(2)         #set the number of threads
-set.seed(123); summa &lt;- 0; x &lt;- 0              #partial values
-for (i in 1:nsim) {
-  m &lt;- matrix(rnorm(n^2), n)    #random matrix
-  a &lt;- crossprod(m)             #symmetrize the random matrix
-  timing &lt;- system.time({
-    x &lt;- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
-  })[3]
-  summa &lt;- summa + timing
-}
-times &lt;- summa/nsim
-cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
+<ul>
+<li>vectorization</li>
+<li>pre-allocating objects</li>
+<li>use matrices instead of Data Frames (Data Tables?)</li>
+<li>check different functions/package implementations</li>
+<li>use byte compiled code</li>
+<li>if extra improvement is needed, it is time to consider <em>Rccp</em> or external function calls</li>
+<li>calling <em>Julia</em> functions can also be helpful</li>
+</ul></li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 

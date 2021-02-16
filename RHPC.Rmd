@@ -13,6 +13,23 @@ output:
 
 ![](Images/kebne_arch.png){width=700px}
 
+
+## Types of programs 
+
+Programs could be of different types:
+
+* Compute bound if they use mainly CPU power (more cores can help)
+
+* Memory bound if the bottlenecks are allocating memory, copying/duplicating objects (large 
+memory nodes on Kebnekaise)
+
+## Parallelization levels
+
+* Implicit parallelism is included in some packages, one only needs to assign the number of workers (threads)
+
+* Explicit parallelism requires the intervention of the user to write the proper parallelization 
+instruction (Rmpi for instance)
+
 ## Using R in HPC
 
 There are several versions of R installed on Kebnekaise
@@ -60,14 +77,18 @@ Options:
 
 * https://www.hpc2n.umu.se/resources/software/user_installed/r
 
+## SLURM workload manager 
+
+![](Images/slurm.png){width=660px}
+
 ## Running serial jobs
 
-![](Images/using-r-hpc-serial.png){width=750px}
+![](Images/using-r-hpc-serial.png){width=800px}
 
 ## Running your script
 
 * Transfer your files to Kebnekaise
-* Submit your job with:  sbatch job.sh
+* Submit your job with:  **sbatch job.sh**
 * In case sbatch complains about the DOS format use the command:
 
 **dos2unix job.sh** 
@@ -96,9 +117,52 @@ ml R/3.6.0
 R --no-save --no-restore -f script.R
 ```
 
+## Running R in parallel mode
+
+![](Images/using-r-hpc-parallel.png){width=800px}
+
+## Monitoring your jobs
+
+* **squeue -a -u username** list your jobs on the queue
+
+* **projinfo** displays the project's usage
+
 
 ## Parallel packages
+
 Some packages like BLAS/LAPACK have an implicit parallelization layer that can be activated by setting a number of threads. 
+
+On Kebnekaise the OpenBLAS libraries are available and can use implicit parallelism:
+
+```{r eval=FALSE}
+sessionInfo()
+
+R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.6 LTS
+
+Matrix products: default
+BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so
+```
+
+## Parallel packages
+
+The number of threads can be controlled with the *RhpcBLASctl* package and setting the number of threads:
+
+```{r eval=FALSE}
+library(RhpcBLASctl)
+n <- 5000; nsim <- 3                 #matrix size nxn; nr. independent simulations
+set.seed(123); summa <- 0; x <- 0; blas_set_num_threads(1)  #set the number of threads
+for (i in 1:nsim) {
+  m <- matrix(rnorm(n^2), n); a <- crossprod(m)   #random matrix and symmetrize it
+  timing <- system.time({
+    x <- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3] ;  summa <- summa + timing
+} ; times <- summa/nsim
+cat(c("Computation of eig. random matrix 5000x5000 (sec): ", times, "\n"))
+```
+
+## Parallel packages
 
 Other packages (doParallel, parallel, doMC, doMPI, doFuture) use a common set of instructions to use parallel capabilities as follows:
 
@@ -179,9 +243,7 @@ res <- clusterApply(cl, 1:N, fun = myfunc)
 stopCluster(cl)
 ```
 
-## Running R in parallel mode
 
-![](Images/using-r-hpc-parallel.png){width=750px}
 
 ## Random Numbers in parallel simulations
 
@@ -285,6 +347,18 @@ Then copy and paste the URL on your local web browser.
 
 ![](Images/job-usage.png){width=750px}
 
+## Summary 
+
+* Login nodes and Rstudio should be used for lightweight tasks for other tasks use the SLURM batch 
+system **sbatch script**
+
+* Compute bound or memory bound programs
+
+* Some packages for instance the linear algebra ones include already implicit parallelism
+
+* It is a good practice to get a profiling analysis (time vs. nr. cores) to request the optimal nr. of cores in your batch script
+
+* Monitor the behavior of your batch job with **job-usage** tool
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

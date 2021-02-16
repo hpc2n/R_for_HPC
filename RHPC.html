@@ -126,6 +126,22 @@ slide:not(.current) .plotly.html-widget{
 
 <img width="700px" src='Images/kebne_arch.png' title=''/>
 
+</article></slide><slide class=""><hgroup><h2>Types of programs</h2></hgroup><article  id="types-of-programs">
+
+<p>Programs could be of different types:</p>
+
+<ul>
+<li><p>Compute bound if they use mainly CPU power (more cores can help)</p></li>
+<li><p>Memory bound if the bottlenecks are allocating memory, copying/duplicating objects (large memory nodes on Kebnekaise)</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Parallelization levels</h2></hgroup><article  id="parallelization-levels">
+
+<ul>
+<li><p>Implicit parallelism is included in some packages, one only needs to assign the number of workers (threads)</p></li>
+<li><p>Explicit parallelism requires the intervention of the user to write the proper parallelization instruction (Rmpi for instance)</p></li>
+</ul>
+
 </article></slide><slide class=""><hgroup><h2>Using R in HPC</h2></hgroup><article  id="using-r-in-hpc">
 
 <p>There are several versions of R installed on Kebnekaise</p>
@@ -170,15 +186,19 @@ Options:
 <li><a href='https://www.hpc2n.umu.se/resources/software/user_installed/r' title=''>https://www.hpc2n.umu.se/resources/software/user_installed/r</a></li>
 </ul>
 
+</article></slide><slide class=""><hgroup><h2>SLURM workload manager</h2></hgroup><article  id="slurm-workload-manager">
+
+<img width="660px" src='Images/slurm.png' title=''/>
+
 </article></slide><slide class=""><hgroup><h2>Running serial jobs</h2></hgroup><article  id="running-serial-jobs">
 
-<img width="750px" src='Images/using-r-hpc-serial.png' title=''/>
+<img width="800px" src='Images/using-r-hpc-serial.png' title=''/>
 
 </article></slide><slide class=""><hgroup><h2>Running your script</h2></hgroup><article  id="running-your-script">
 
 <ul>
 <li>Transfer your files to Kebnekaise</li>
-<li>Submit your job with: sbatch job.sh</li>
+<li>Submit your job with: <strong>sbatch job.sh</strong></li>
 <li>In case sbatch complains about the DOS format use the command:</li>
 </ul>
 
@@ -208,9 +228,48 @@ ml R/3.6.0
 
 R --no-save --no-restore -f script.R</pre>
 
+</article></slide><slide class=""><hgroup><h2>Running R in parallel mode</h2></hgroup><article  id="running-r-in-parallel-mode">
+
+<img width="800px" src='Images/using-r-hpc-parallel.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Monitoring your jobs</h2></hgroup><article  id="monitoring-your-jobs">
+
+<ul>
+<li><p><strong>squeue -a -u username</strong> list your jobs on the queue</p></li>
+<li><p><strong>projinfo</strong> displays the project’s usage</p></li>
+</ul>
+
 </article></slide><slide class=""><hgroup><h2>Parallel packages</h2></hgroup><article  id="parallel-packages">
 
 <p>Some packages like BLAS/LAPACK have an implicit parallelization layer that can be activated by setting a number of threads.</p>
+
+<p>On Kebnekaise the OpenBLAS libraries are available and can use implicit parallelism:</p>
+
+<pre class = 'prettyprint lang-r'>sessionInfo()
+
+R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.6 LTS
+
+Matrix products: default
+BLAS/LAPACK: /cvmfs/.../8.2.0-2.31.1/OpenBLAS/0.3.5/lib/libopenblas_haswellp-r0.3.5.so</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages</h2></hgroup><article  id="parallel-packages-1">
+
+<p>The number of threads can be controlled with the <em>RhpcBLASctl</em> package and setting the number of threads:</p>
+
+<pre class = 'prettyprint lang-r'>library(RhpcBLASctl)
+n &lt;- 5000; nsim &lt;- 3                 #matrix size nxn; nr. independent simulations
+set.seed(123); summa &lt;- 0; x &lt;- 0; blas_set_num_threads(1)  #set the number of threads
+for (i in 1:nsim) {
+  m &lt;- matrix(rnorm(n^2), n); a &lt;- crossprod(m)   #random matrix and symmetrize it
+  timing &lt;- system.time({
+    x &lt;- eigen(a, symmetric=TRUE, only.values=TRUE)$values[1]   #compute eigenvalues
+  })[3] ;  summa &lt;- summa + timing
+} ; times &lt;- summa/nsim
+cat(c(&quot;Computation of eig. random matrix 5000x5000 (sec): &quot;, times, &quot;\n&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages</h2></hgroup><article  id="parallel-packages-2">
 
 <p>Other packages (doParallel, parallel, doMC, doMPI, doFuture) use a common set of instructions to use parallel capabilities as follows:</p>
 
@@ -285,10 +344,6 @@ cl &lt;- makeCluster(P)   #distribute the work across cores
 clusterExport(cl, &quot;mydata&quot;)
 res &lt;- clusterApply(cl, 1:N, fun = myfunc)
 stopCluster(cl)</pre>
-
-</article></slide><slide class=""><hgroup><h2>Running R in parallel mode</h2></hgroup><article  id="running-r-in-parallel-mode">
-
-<img width="750px" src='Images/using-r-hpc-parallel.png' title=''/>
 
 </article></slide><slide class=""><hgroup><h2>Random Numbers in parallel simulations</h2></hgroup><article  id="random-numbers-in-parallel-simulations">
 
@@ -387,6 +442,16 @@ Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 </article></slide><slide class=""><hgroup><h2>Good practices</h2></hgroup><article  id="good-practices-1">
 
 <img width="750px" src='Images/job-usage.png' title=''/>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<ul>
+<li><p>Login nodes and Rstudio should be used for lightweight tasks for other tasks use the SLURM batch system <strong>sbatch script</strong></p></li>
+<li><p>Compute bound or memory bound programs</p></li>
+<li><p>Some packages for instance the linear algebra ones include already implicit parallelism</p></li>
+<li><p>It is a good practice to get a profiling analysis (time vs. nr. cores) to request the optimal nr. of cores in your batch script</p></li>
+<li><p>Monitor the behavior of your batch job with <strong>job-usage</strong> tool</p></li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 

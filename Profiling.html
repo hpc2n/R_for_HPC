@@ -193,7 +193,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    1.45    0.01    1.53</pre>
+##    1.36    0.00    1.36</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-1">
 
@@ -232,11 +232,11 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic(&quot;Total execution time&quot;)
     res &lt;- sim2(size)</pre>
 
-<pre >## only for-loop: 3.15 sec elapsed</pre>
+<pre >## only for-loop: 2.63 sec elapsed</pre>
 
 <pre class = 'prettyprint lang-r'>toc(log = TRUE)</pre>
 
-<pre >## Total execution time: 3.17 sec elapsed</pre>
+<pre >## Total execution time: 2.66 sec elapsed</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-4">
 
@@ -245,10 +245,10 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic.log()</pre>
 
 <pre >## [[1]]
-## [1] &quot;only for-loop: 3.15 sec elapsed&quot;
+## [1] &quot;only for-loop: 2.63 sec elapsed&quot;
 ## 
 ## [[2]]
-## [1] &quot;Total execution time: 3.17 sec elapsed&quot;</pre>
+## [1] &quot;Total execution time: 2.66 sec elapsed&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>tic.clearlog()</pre>
 
@@ -285,45 +285,45 @@ Rprof(NULL)</pre>
 
 <pre >## $by.self
 ##         self.time self.pct total.time total.pct
-## &quot;runif&quot;      0.80    51.95       0.80     51.95
-## &quot;sim&quot;        0.40    25.97       1.54    100.00
-## &quot;pow2&quot;       0.34    22.08       0.34     22.08
+## &quot;runif&quot;      0.64    46.38       0.64     46.38
+## &quot;sim&quot;        0.44    31.88       1.38    100.00
+## &quot;pow2&quot;       0.30    21.74       0.30     21.74
 ## 
 ## $by.total
 ##                          total.time total.pct self.time self.pct
-## &quot;sim&quot;                          1.54    100.00      0.40    25.97
-## &quot;block_exec&quot;                   1.54    100.00      0.00     0.00
-## &quot;call_block&quot;                   1.54    100.00      0.00     0.00
-## &quot;eval&quot;                         1.54    100.00      0.00     0.00
-## &quot;evaluate&quot;                     1.54    100.00      0.00     0.00
-## &quot;evaluate::evaluate&quot;           1.54    100.00      0.00     0.00
-## &quot;evaluate_call&quot;                1.54    100.00      0.00     0.00
-## &quot;FUN&quot;                          1.54    100.00      0.00     0.00
-## &quot;generator$render&quot;             1.54    100.00      0.00     0.00
-## &quot;handle&quot;                       1.54    100.00      0.00     0.00
-## &quot;in_dir&quot;                       1.54    100.00      0.00     0.00
-## &quot;knitr::knit&quot;                  1.54    100.00      0.00     0.00
-## &quot;lapply&quot;                       1.54    100.00      0.00     0.00
-## &quot;process_file&quot;                 1.54    100.00      0.00     0.00
-## &quot;process_group&quot;                1.54    100.00      0.00     0.00
-## &quot;process_group.block&quot;          1.54    100.00      0.00     0.00
-## &quot;render&quot;                       1.54    100.00      0.00     0.00
-## &quot;render_one&quot;                   1.54    100.00      0.00     0.00
-## &quot;rmarkdown::render&quot;            1.54    100.00      0.00     0.00
-## &quot;rmarkdown::render_site&quot;       1.54    100.00      0.00     0.00
-## &quot;sapply&quot;                       1.54    100.00      0.00     0.00
-## &quot;suppressMessages&quot;             1.54    100.00      0.00     0.00
-## &quot;timing_fn&quot;                    1.54    100.00      0.00     0.00
-## &quot;withCallingHandlers&quot;          1.54    100.00      0.00     0.00
-## &quot;withVisible&quot;                  1.54    100.00      0.00     0.00
-## &quot;runif&quot;                        0.80     51.95      0.80    51.95
-## &quot;pow2&quot;                         0.34     22.08      0.34    22.08
+## &quot;sim&quot;                          1.38    100.00      0.44    31.88
+## &quot;block_exec&quot;                   1.38    100.00      0.00     0.00
+## &quot;call_block&quot;                   1.38    100.00      0.00     0.00
+## &quot;eval&quot;                         1.38    100.00      0.00     0.00
+## &quot;evaluate&quot;                     1.38    100.00      0.00     0.00
+## &quot;evaluate::evaluate&quot;           1.38    100.00      0.00     0.00
+## &quot;evaluate_call&quot;                1.38    100.00      0.00     0.00
+## &quot;FUN&quot;                          1.38    100.00      0.00     0.00
+## &quot;generator$render&quot;             1.38    100.00      0.00     0.00
+## &quot;handle&quot;                       1.38    100.00      0.00     0.00
+## &quot;in_dir&quot;                       1.38    100.00      0.00     0.00
+## &quot;knitr::knit&quot;                  1.38    100.00      0.00     0.00
+## &quot;lapply&quot;                       1.38    100.00      0.00     0.00
+## &quot;process_file&quot;                 1.38    100.00      0.00     0.00
+## &quot;process_group&quot;                1.38    100.00      0.00     0.00
+## &quot;process_group.block&quot;          1.38    100.00      0.00     0.00
+## &quot;render&quot;                       1.38    100.00      0.00     0.00
+## &quot;render_one&quot;                   1.38    100.00      0.00     0.00
+## &quot;rmarkdown::render&quot;            1.38    100.00      0.00     0.00
+## &quot;rmarkdown::render_site&quot;       1.38    100.00      0.00     0.00
+## &quot;sapply&quot;                       1.38    100.00      0.00     0.00
+## &quot;suppressMessages&quot;             1.38    100.00      0.00     0.00
+## &quot;timing_fn&quot;                    1.38    100.00      0.00     0.00
+## &quot;withCallingHandlers&quot;          1.38    100.00      0.00     0.00
+## &quot;withVisible&quot;                  1.38    100.00      0.00     0.00
+## &quot;runif&quot;                        0.64     46.38      0.64    46.38
+## &quot;pow2&quot;                         0.30     21.74      0.30    21.74
 ## 
 ## $sample.interval
 ## [1] 0.02
 ## 
 ## $sampling.time
-## [1] 1.54</pre>
+## [1] 1.38</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-3">
 
@@ -348,22 +348,14 @@ p &lt;- readProfileData(filename = &quot;Rprof.out&quot;)</pre>
 
 <pre class = 'prettyprint lang-r'>library(rbenchmark)
 size &lt;- 500000
-bench &lt;- benchmark(sim(size), replications=10)
-bench </pre>
-
-<pre >##        test replications elapsed relative user.self sys.self user.child
-## 1 sim(size)           10   16.05        1     15.53     0.01         NA
-##   sys.child
-## 1        NA</pre>
+bench &lt;- benchmark(sim(size), replications=10)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rbenchmark</h2></hgroup><article  id="rbenchmark-1">
 
 <pre class = 'prettyprint lang-r'>bench </pre>
 
-<pre >##        test replications elapsed relative user.self sys.self user.child
-## 1 sim(size)           10   16.05        1     15.53     0.01         NA
-##   sys.child
-## 1        NA</pre>
+<pre >##        test replications elapsed relative user.self sys.self user.child sys.child
+## 1 sim(size)           10   13.35        1     13.33        0         NA        NA</pre>
 
 <p>the elapsed time is an average over the 10 replications we especified in the benchmark function.</p>
 
@@ -383,10 +375,20 @@ bench2 &lt;- microbenchmark(sim(size), times=10)</pre>
 <pre class = 'prettyprint lang-r'>bench2 </pre>
 
 <pre >## Unit: seconds
-##       expr      min       lq     mean   median       uq     max neval
-##  sim(size) 1.502352 1.513475 1.618528 1.574208 1.643162 2.04749    10</pre>
+##       expr      min       lq    mean  median       uq     max neval
+##  sim(size) 1.295516 1.303518 1.31387 1.31352 1.321869 1.33613    10</pre>
 
 <p>in this case we obtain more statistics of the benchmarking process like the <em>mean</em>, <em>min</em>, <em>max</em>, …</p>
+
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<ul>
+<li><p>Timing your R code is useful to see what parts require optimization or a better package.</p></li>
+<li><p><strong>system.time</strong> and <strong>tic-toc</strong> will give you a single evaluation of the time taken by some R code</p></li>
+<li><p><strong>rbenchmark</strong>, <strong>microbenchmark</strong> functions will give statistics over independent replicas of the code</p></li>
+<li><p>More useful information from profiling functions will be obtained if one uses functions to enclose independent tasks in your code (remember <em>pow2</em>, <em>runif</em> in the Pi calculation)</p></li>
+<li><p>Once you know what are the bottlenecks of your code, working on a few of the most expensive ones could be more effective than working on many less significative functions</p></li>
+</ul>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 
