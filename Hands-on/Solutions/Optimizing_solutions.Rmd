@@ -127,3 +127,59 @@ cppFunction('float sum_cpp(float a, float b, float c ) {
 sum_cpp
 sum_cpp(2,4,6)
 ```
+
+## 4. Exercise (Challenge)
+
+The following functions **func1, func2** update the entry *i,j* of a matrix A (they do the same thing).
+One of them is faster than the other. 
+
+```{r eval=TRUE}
+library(tictoc)
+A <- matrix(runif(1000000),nrow=1000)
+
+func1 <- function(a) {
+  for(j in 1:ncol(a)) {
+    for(i in 1:nrow(a)) {
+      if (a[i,j] > 0.5 ) {
+        a[i,j] <- 0.5
+      }
+    }
+  }
+  a
+}
+tic()
+B <- func1(A)
+toc()
+
+func2 <- function(a) {
+  for(j in 1:dim(a)[2]) {
+    for(i in 1:dim(a)[1]) {
+      if (a[i,j] > 0.5 ) {
+        a[i,j] <- 0.5
+      }
+    }
+  }
+  a
+}
+
+tic()
+C <- func2(A)
+toc()
+
+```
+
+```{r eval=TRUE}
+library(lineprof)
+prof1 <- lineprof(func1(A))
+prof1
+
+prof2 <- lineprof(func2(A))
+prof2
+```
+
+Look at the columns allocated, release, and duplicated data. Can you draw a conclusion why one 
+of the functions is faster that the other?
+
+Answer: The first function is allocating more memory and doing many more duplications than the
+second function. Because of that it is slower than the second one. More profound reason dim() function is a primitive function and R doesn't need
+to do unnecessary duplications

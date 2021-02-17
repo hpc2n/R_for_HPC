@@ -100,5 +100,6 @@ The message from this simple calculation is that one always needs to check the p
 * https://www.tutorialspoint.com/r/index.htm
 * R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
 * https://www.r-bloggers.com/the-wonders-of-foreach/
+* https://unc-libraries-data.github.io/R-Open-Labs/Extras/Parallel/foreach.html
 
 [Return to Index](index.html)
