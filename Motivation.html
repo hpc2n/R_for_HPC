@@ -41,6 +41,7 @@
     };
   </script>
 
+  <script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
   <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
@@ -158,7 +159,7 @@ stime &lt;- system.time({
 stime</pre>
 
 <pre >## elapsed 
-##   24.55</pre>
+##   33.39</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
 
@@ -176,7 +177,7 @@ ptime &lt;- system.time({
 ptime</pre>
 
 <pre >## elapsed 
-##   17.05</pre>
+##   18.89</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
@@ -193,7 +194,7 @@ ptime</pre>
 stime </pre>
 
 <pre >##    user  system elapsed 
-##    2.95    0.01    3.30</pre>
+##    2.49    0.00    2.54</pre>
 
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
@@ -202,7 +203,7 @@ ptime &lt;- system.time(
 ptime </pre>
 
 <pre >##    user  system elapsed 
-##    3.53    0.26    3.97</pre>
+##    3.38    0.29    3.77</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 

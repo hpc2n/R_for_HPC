@@ -41,6 +41,7 @@
     };
   </script>
 
+  <script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
   <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
@@ -149,7 +150,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.50    0.02    0.61</pre>
+##    0.50    0.01    0.67</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -171,7 +172,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.02    0.00    0.01</pre>
+##       0       0       0</pre>
 
 <p>a message from this example is that loops are expensive in R and vectorization can help to improve the performance of the code.</p>
 
@@ -188,7 +189,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   11.50    0.20   11.78</pre>
+##   11.89    0.16   12.13</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -201,7 +202,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.56    0.00    0.57</pre>
+##    0.56    0.00    0.56</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -213,7 +214,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.04    0.00    0.04</pre>
+##    0.07    0.00    0.06</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames with caution</h2></hgroup><article  id="using-data-frames-with-caution-1">
 
@@ -239,12 +240,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    3.92    0.04    3.98</pre>
+##    4.03    0.11    4.14</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    2.05    0.09    2.15</pre>
+##    2.17    0.05    2.22</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -282,11 +283,11 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 
 <pre >## Unit: milliseconds
 ##             expr      min       lq     mean   median       uq       max neval
-##        sim(size) 247.6019 278.1036 294.7497 288.8107 304.6920  406.5221   100
-##  sim.comp0(size) 705.8492 762.4206 797.5667 786.4206 806.7642 1025.9042   100
-##  sim.comp1(size) 329.6524 359.8811 382.8292 371.6920 390.2358  619.7877   100
-##  sim.comp2(size) 257.1522 272.4472 294.4742 284.9329 296.9341  609.7912   100
-##  sim.comp3(size) 241.1156 266.5861 285.3945 281.1118 290.7295  478.4456   100</pre>
+##        sim(size) 256.1334 275.9402 298.6144 293.5579 315.6226  432.9733   100
+##  sim.comp0(size) 751.9588 793.1886 828.0860 816.6851 843.4521 1099.1639   100
+##  sim.comp1(size) 338.4474 363.6738 397.9186 393.9271 419.8657  531.2788   100
+##  sim.comp2(size) 253.7122 283.5428 302.1109 298.1768 323.1541  364.2703   100
+##  sim.comp3(size) 251.3520 276.4393 294.8281 287.2309 314.1141  356.1234   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -308,8 +309,8 @@ enableJIT(level=3)</pre>
 bench</pre>
 
 <pre >## Unit: milliseconds
-##       expr      min       lq     mean   median      uq      max neval
-##  sim(size) 253.9375 276.5897 291.4551 285.3054 298.203 400.8247   100</pre>
+##       expr      min       lq     mean   median       uq      max neval
+##  sim(size) 251.6276 278.7412 310.3656 302.5594 333.1549 504.0602   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rcpp package</h2></hgroup><article  id="rcpp-package">
 
