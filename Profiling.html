@@ -41,7 +41,7 @@
     };
   </script>
 
-  <script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
   <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
   <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
@@ -87,6 +87,75 @@ slide:not(.current) .plotly.html-widget{
   display: block;
 }
 
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+            pre > code.sourceCode { white-space: pre; position: relative; }
+            pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+            pre > code.sourceCode > span:empty { height: 1.2em; }
+            code.sourceCode > span { color: inherit; text-decoration: inherit; }
+            div.sourceCode { margin: 1em 0; }
+            pre.sourceCode { margin: 0; }
+            @media screen {
+            div.sourceCode { overflow: auto; }
+            }
+            @media print {
+            pre > code.sourceCode { white-space: pre-wrap; }
+            pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+            }
+            pre.numberSource code
+              { counter-reset: source-line 0; }
+            pre.numberSource code > span
+              { position: relative; left: -4em; counter-increment: source-line; }
+            pre.numberSource code > span > a:first-child::before
+              { content: counter(source-line);
+                position: relative; left: -1em; text-align: right; vertical-align: baseline;
+                border: none; display: inline-block;
+                -webkit-touch-callout: none; -webkit-user-select: none;
+                -khtml-user-select: none; -moz-user-select: none;
+                -ms-user-select: none; user-select: none;
+                padding: 0 4px; width: 4em;
+                color: #aaaaaa;
+              }
+            pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+            div.sourceCode
+              {   }
+            @media screen {
+            pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+            }
+            code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+            code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+            code span.at { color: #7d9029; } /* Attribute */
+            code span.bn { color: #40a070; } /* BaseN */
+            code span.bu { } /* BuiltIn */
+            code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+            code span.ch { color: #4070a0; } /* Char */
+            code span.cn { color: #880000; } /* Constant */
+            code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+            code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+            code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+            code span.dt { color: #902000; } /* DataType */
+            code span.dv { color: #40a070; } /* DecVal */
+            code span.er { color: #ff0000; font-weight: bold; } /* Error */
+            code span.ex { } /* Extension */
+            code span.fl { color: #40a070; } /* Float */
+            code span.fu { color: #06287e; } /* Function */
+            code span.im { } /* Import */
+            code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+            code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+            code span.op { color: #666666; } /* Operator */
+            code span.ot { color: #007020; } /* Other */
+            code span.pp { color: #bc7a00; } /* Preprocessor */
+            code span.sc { color: #4070a0; } /* SpecialChar */
+            code span.ss { color: #bb6688; } /* SpecialString */
+            code span.st { color: #4070a0; } /* String */
+            code span.va { color: #19177c; } /* Variable */
+            code span.vs { color: #4070a0; } /* VerbatimString */
+            code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+        
     slides > slide:not(.nobackground):before {
       font-size: 12pt;
       content: "";
@@ -194,7 +263,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    1.42    0.00    1.44</pre>
+##    2.01    0.00    2.13</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-1">
 
@@ -233,11 +302,11 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic(&quot;Total execution time&quot;)
     res &lt;- sim2(size)</pre>
 
-<pre >## only for-loop: 2.9 sec elapsed</pre>
+<pre >## only for-loop: 3.38 sec elapsed</pre>
 
 <pre class = 'prettyprint lang-r'>toc(log = TRUE)</pre>
 
-<pre >## Total execution time: 2.94 sec elapsed</pre>
+<pre >## Total execution time: 3.41 sec elapsed</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-4">
 
@@ -246,10 +315,10 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic.log()</pre>
 
 <pre >## [[1]]
-## [1] &quot;only for-loop: 2.9 sec elapsed&quot;
+## [1] &quot;only for-loop: 3.38 sec elapsed&quot;
 ## 
 ## [[2]]
-## [1] &quot;Total execution time: 2.94 sec elapsed&quot;</pre>
+## [1] &quot;Total execution time: 3.41 sec elapsed&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>tic.clearlog()</pre>
 
@@ -286,45 +355,45 @@ Rprof(NULL)</pre>
 
 <pre >## $by.self
 ##         self.time self.pct total.time total.pct
-## &quot;runif&quot;      0.78    47.56       0.78     47.56
-## &quot;sim&quot;        0.58    35.37       1.64    100.00
-## &quot;pow2&quot;       0.28    17.07       0.28     17.07
+## &quot;runif&quot;      0.92    54.12       0.92     54.12
+## &quot;sim&quot;        0.40    23.53       1.70    100.00
+## &quot;pow2&quot;       0.38    22.35       0.38     22.35
 ## 
 ## $by.total
 ##                          total.time total.pct self.time self.pct
-## &quot;sim&quot;                          1.64    100.00      0.58    35.37
-## &quot;block_exec&quot;                   1.64    100.00      0.00     0.00
-## &quot;call_block&quot;                   1.64    100.00      0.00     0.00
-## &quot;eval&quot;                         1.64    100.00      0.00     0.00
-## &quot;evaluate&quot;                     1.64    100.00      0.00     0.00
-## &quot;evaluate::evaluate&quot;           1.64    100.00      0.00     0.00
-## &quot;evaluate_call&quot;                1.64    100.00      0.00     0.00
-## &quot;FUN&quot;                          1.64    100.00      0.00     0.00
-## &quot;generator$render&quot;             1.64    100.00      0.00     0.00
-## &quot;handle&quot;                       1.64    100.00      0.00     0.00
-## &quot;in_dir&quot;                       1.64    100.00      0.00     0.00
-## &quot;knitr::knit&quot;                  1.64    100.00      0.00     0.00
-## &quot;lapply&quot;                       1.64    100.00      0.00     0.00
-## &quot;process_file&quot;                 1.64    100.00      0.00     0.00
-## &quot;process_group&quot;                1.64    100.00      0.00     0.00
-## &quot;process_group.block&quot;          1.64    100.00      0.00     0.00
-## &quot;render&quot;                       1.64    100.00      0.00     0.00
-## &quot;render_one&quot;                   1.64    100.00      0.00     0.00
-## &quot;rmarkdown::render&quot;            1.64    100.00      0.00     0.00
-## &quot;rmarkdown::render_site&quot;       1.64    100.00      0.00     0.00
-## &quot;sapply&quot;                       1.64    100.00      0.00     0.00
-## &quot;suppressMessages&quot;             1.64    100.00      0.00     0.00
-## &quot;timing_fn&quot;                    1.64    100.00      0.00     0.00
-## &quot;withCallingHandlers&quot;          1.64    100.00      0.00     0.00
-## &quot;withVisible&quot;                  1.64    100.00      0.00     0.00
-## &quot;runif&quot;                        0.78     47.56      0.78    47.56
-## &quot;pow2&quot;                         0.28     17.07      0.28    17.07
+## &quot;sim&quot;                          1.70    100.00      0.40    23.53
+## &quot;block_exec&quot;                   1.70    100.00      0.00     0.00
+## &quot;call_block&quot;                   1.70    100.00      0.00     0.00
+## &quot;eval&quot;                         1.70    100.00      0.00     0.00
+## &quot;evaluate&quot;                     1.70    100.00      0.00     0.00
+## &quot;evaluate::evaluate&quot;           1.70    100.00      0.00     0.00
+## &quot;evaluate_call&quot;                1.70    100.00      0.00     0.00
+## &quot;FUN&quot;                          1.70    100.00      0.00     0.00
+## &quot;generator$render&quot;             1.70    100.00      0.00     0.00
+## &quot;handle&quot;                       1.70    100.00      0.00     0.00
+## &quot;in_dir&quot;                       1.70    100.00      0.00     0.00
+## &quot;knitr::knit&quot;                  1.70    100.00      0.00     0.00
+## &quot;lapply&quot;                       1.70    100.00      0.00     0.00
+## &quot;process_file&quot;                 1.70    100.00      0.00     0.00
+## &quot;process_group&quot;                1.70    100.00      0.00     0.00
+## &quot;process_group.block&quot;          1.70    100.00      0.00     0.00
+## &quot;render&quot;                       1.70    100.00      0.00     0.00
+## &quot;render_one&quot;                   1.70    100.00      0.00     0.00
+## &quot;rmarkdown::render&quot;            1.70    100.00      0.00     0.00
+## &quot;rmarkdown::render_site&quot;       1.70    100.00      0.00     0.00
+## &quot;sapply&quot;                       1.70    100.00      0.00     0.00
+## &quot;suppressMessages&quot;             1.70    100.00      0.00     0.00
+## &quot;timing_fn&quot;                    1.70    100.00      0.00     0.00
+## &quot;withCallingHandlers&quot;          1.70    100.00      0.00     0.00
+## &quot;withVisible&quot;                  1.70    100.00      0.00     0.00
+## &quot;runif&quot;                        0.92     54.12      0.92    54.12
+## &quot;pow2&quot;                         0.38     22.35      0.38    22.35
 ## 
 ## $sample.interval
 ## [1] 0.02
 ## 
 ## $sampling.time
-## [1] 1.64</pre>
+## [1] 1.7</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-3">
 
@@ -356,7 +425,7 @@ bench &lt;- benchmark(sim(size), replications=10)</pre>
 <pre class = 'prettyprint lang-r'>bench </pre>
 
 <pre >##        test replications elapsed relative user.self sys.self user.child
-## 1 sim(size)           10   14.83        1     14.72        0         NA
+## 1 sim(size)           10   17.67        1     17.59     0.02         NA
 ##   sys.child
 ## 1        NA</pre>
 
@@ -379,7 +448,7 @@ bench2 &lt;- microbenchmark(sim(size), times=10)</pre>
 
 <pre >## Unit: seconds
 ##       expr      min       lq     mean   median       uq      max neval
-##  sim(size) 1.402445 1.411476 1.438269 1.433879 1.456927 1.494025    10</pre>
+##  sim(size) 1.712763 1.727445 1.780342 1.751536 1.837819 1.912098    10</pre>
 
 <p>in this case we obtain more statistics of the benchmarking process like the <em>mean</em>, <em>min</em>, <em>max</em>, …</p>
 

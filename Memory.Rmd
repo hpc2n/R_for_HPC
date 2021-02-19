@@ -165,6 +165,7 @@ mem_change( z <- myf() )
 Lineprof package can be installed with:
 
 ```{r eval=FALSE}
+install.packages("devtools")
 devtools::install_github("hadley/lineprof")
 ```
 

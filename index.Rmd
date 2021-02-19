@@ -1,6 +1,6 @@
 ---
 title: "R for High Performance Computing"
-author: "Pedro Ojeda"
+author: "Instructor: Pedro Ojeda"
 ---
 
 ![](Images/logo.png)
