@@ -263,7 +263,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    2.01    0.00    2.13</pre>
+##    1.75    0.00    1.91</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-1">
 
@@ -302,11 +302,11 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic(&quot;Total execution time&quot;)
     res &lt;- sim2(size)</pre>
 
-<pre >## only for-loop: 3.38 sec elapsed</pre>
+<pre >## only for-loop: 3.57 sec elapsed</pre>
 
 <pre class = 'prettyprint lang-r'>toc(log = TRUE)</pre>
 
-<pre >## Total execution time: 3.41 sec elapsed</pre>
+<pre >## Total execution time: 3.59 sec elapsed</pre>
 
 </article></slide><slide class=""><hgroup><h2>Monitoring the execution time</h2></hgroup><article  id="monitoring-the-execution-time-4">
 
@@ -315,10 +315,10 @@ sim2 &lt;- function(l) {
 <pre class = 'prettyprint lang-r'>tic.log()</pre>
 
 <pre >## [[1]]
-## [1] &quot;only for-loop: 3.38 sec elapsed&quot;
+## [1] &quot;only for-loop: 3.57 sec elapsed&quot;
 ## 
 ## [[2]]
-## [1] &quot;Total execution time: 3.41 sec elapsed&quot;</pre>
+## [1] &quot;Total execution time: 3.59 sec elapsed&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>tic.clearlog()</pre>
 
@@ -355,45 +355,45 @@ Rprof(NULL)</pre>
 
 <pre >## $by.self
 ##         self.time self.pct total.time total.pct
-## &quot;runif&quot;      0.92    54.12       0.92     54.12
-## &quot;sim&quot;        0.40    23.53       1.70    100.00
-## &quot;pow2&quot;       0.38    22.35       0.38     22.35
+## &quot;runif&quot;       0.8    44.44        0.8     44.44
+## &quot;sim&quot;         0.7    38.89        1.8    100.00
+## &quot;pow2&quot;        0.3    16.67        0.3     16.67
 ## 
 ## $by.total
 ##                          total.time total.pct self.time self.pct
-## &quot;sim&quot;                          1.70    100.00      0.40    23.53
-## &quot;block_exec&quot;                   1.70    100.00      0.00     0.00
-## &quot;call_block&quot;                   1.70    100.00      0.00     0.00
-## &quot;eval&quot;                         1.70    100.00      0.00     0.00
-## &quot;evaluate&quot;                     1.70    100.00      0.00     0.00
-## &quot;evaluate::evaluate&quot;           1.70    100.00      0.00     0.00
-## &quot;evaluate_call&quot;                1.70    100.00      0.00     0.00
-## &quot;FUN&quot;                          1.70    100.00      0.00     0.00
-## &quot;generator$render&quot;             1.70    100.00      0.00     0.00
-## &quot;handle&quot;                       1.70    100.00      0.00     0.00
-## &quot;in_dir&quot;                       1.70    100.00      0.00     0.00
-## &quot;knitr::knit&quot;                  1.70    100.00      0.00     0.00
-## &quot;lapply&quot;                       1.70    100.00      0.00     0.00
-## &quot;process_file&quot;                 1.70    100.00      0.00     0.00
-## &quot;process_group&quot;                1.70    100.00      0.00     0.00
-## &quot;process_group.block&quot;          1.70    100.00      0.00     0.00
-## &quot;render&quot;                       1.70    100.00      0.00     0.00
-## &quot;render_one&quot;                   1.70    100.00      0.00     0.00
-## &quot;rmarkdown::render&quot;            1.70    100.00      0.00     0.00
-## &quot;rmarkdown::render_site&quot;       1.70    100.00      0.00     0.00
-## &quot;sapply&quot;                       1.70    100.00      0.00     0.00
-## &quot;suppressMessages&quot;             1.70    100.00      0.00     0.00
-## &quot;timing_fn&quot;                    1.70    100.00      0.00     0.00
-## &quot;withCallingHandlers&quot;          1.70    100.00      0.00     0.00
-## &quot;withVisible&quot;                  1.70    100.00      0.00     0.00
-## &quot;runif&quot;                        0.92     54.12      0.92    54.12
-## &quot;pow2&quot;                         0.38     22.35      0.38    22.35
+## &quot;sim&quot;                           1.8    100.00       0.7    38.89
+## &quot;block_exec&quot;                    1.8    100.00       0.0     0.00
+## &quot;call_block&quot;                    1.8    100.00       0.0     0.00
+## &quot;eval&quot;                          1.8    100.00       0.0     0.00
+## &quot;evaluate&quot;                      1.8    100.00       0.0     0.00
+## &quot;evaluate::evaluate&quot;            1.8    100.00       0.0     0.00
+## &quot;evaluate_call&quot;                 1.8    100.00       0.0     0.00
+## &quot;FUN&quot;                           1.8    100.00       0.0     0.00
+## &quot;generator$render&quot;              1.8    100.00       0.0     0.00
+## &quot;handle&quot;                        1.8    100.00       0.0     0.00
+## &quot;in_dir&quot;                        1.8    100.00       0.0     0.00
+## &quot;knitr::knit&quot;                   1.8    100.00       0.0     0.00
+## &quot;lapply&quot;                        1.8    100.00       0.0     0.00
+## &quot;process_file&quot;                  1.8    100.00       0.0     0.00
+## &quot;process_group&quot;                 1.8    100.00       0.0     0.00
+## &quot;process_group.block&quot;           1.8    100.00       0.0     0.00
+## &quot;render&quot;                        1.8    100.00       0.0     0.00
+## &quot;render_one&quot;                    1.8    100.00       0.0     0.00
+## &quot;rmarkdown::render&quot;             1.8    100.00       0.0     0.00
+## &quot;rmarkdown::render_site&quot;        1.8    100.00       0.0     0.00
+## &quot;sapply&quot;                        1.8    100.00       0.0     0.00
+## &quot;suppressMessages&quot;              1.8    100.00       0.0     0.00
+## &quot;timing_fn&quot;                     1.8    100.00       0.0     0.00
+## &quot;withCallingHandlers&quot;           1.8    100.00       0.0     0.00
+## &quot;withVisible&quot;                   1.8    100.00       0.0     0.00
+## &quot;runif&quot;                         0.8     44.44       0.8    44.44
+## &quot;pow2&quot;                          0.3     16.67       0.3    16.67
 ## 
 ## $sample.interval
 ## [1] 0.02
 ## 
 ## $sampling.time
-## [1] 1.7</pre>
+## [1] 1.8</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rprof</h2></hgroup><article  id="rprof-3">
 
@@ -424,10 +424,8 @@ bench &lt;- benchmark(sim(size), replications=10)</pre>
 
 <pre class = 'prettyprint lang-r'>bench </pre>
 
-<pre >##        test replications elapsed relative user.self sys.self user.child
-## 1 sim(size)           10   17.67        1     17.59     0.02         NA
-##   sys.child
-## 1        NA</pre>
+<pre >##        test replications elapsed relative user.self sys.self user.child sys.child
+## 1 sim(size)           10   16.27        1     15.69     0.04         NA        NA</pre>
 
 <p>the elapsed time is an average over the 10 replications we especified in the benchmark function.</p>
 
@@ -447,8 +445,8 @@ bench2 &lt;- microbenchmark(sim(size), times=10)</pre>
 <pre class = 'prettyprint lang-r'>bench2 </pre>
 
 <pre >## Unit: seconds
-##       expr      min       lq     mean   median       uq      max neval
-##  sim(size) 1.712763 1.727445 1.780342 1.751536 1.837819 1.912098    10</pre>
+##       expr      min      lq     mean   median       uq      max neval
+##  sim(size) 1.562854 1.58251 1.616612 1.601051 1.620297 1.769539    10</pre>
 
 <p>in this case we obtain more statistics of the benchmarking process like the <em>mean</em>, <em>min</em>, <em>max</em>, …</p>
 

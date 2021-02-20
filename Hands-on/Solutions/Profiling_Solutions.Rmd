@@ -1,11 +1,15 @@
 ---
 title: "Solutions"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 date: "Feb., 2021"
 output: html_document
 ---
 
-## 1.
+## 1. Exercise
+
+Use the following template by filling the *FIXME* strings with the corresponding
+R code. In this exercise, you will use the **tictoc** package to time different
+parts of a R code and save the results in a log file:
 
 ```{r eval=TRUE}
 library("tictoc")
@@ -43,7 +47,9 @@ logfile <- tic.log()
 logfile
 ```
 
-# 2. 
+What is the most expensive part of this code? The loop
+
+## 2. Exercise
 
 In this problem you will use common packages to profile R code. Replace the *FIXME* strings
 with appropriate R code.
@@ -95,7 +101,7 @@ summaryRprof("Rprofb.out")
 * The two functions do the same calculation, why the performaces could differ? The user-defined
 function *sumcol* performs plenty of calls to R functions behind scenes.
 
-# 3.
+## 3. Exercise
 
 **Challenge:** Do a benchmarking of the previous two functions by using rbenchmark
 and microbenchmark packages:

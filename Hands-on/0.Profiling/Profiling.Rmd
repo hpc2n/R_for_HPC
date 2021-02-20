@@ -1,6 +1,6 @@
 ---
 title: "Exercises"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 date: "Feb., 2021"
 output: html_document
 ---

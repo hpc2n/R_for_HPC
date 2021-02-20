@@ -1,11 +1,11 @@
 #---
 #title: "Exercises"
-#author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+#author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 #date: "Feb., 2021"
 #output: html_document
 #---
 
-## Problem 1. 
+## 1. Exercise
 
 #Using the functions sumcol() and colSums() from the Profiling section to obtain a memory 
 #profiling summary using *Rprof*. Replace *FIXME* strings with the appropriate R code.
@@ -43,7 +43,7 @@ res2 <- colSums(A)
 
 #What is the total memory used by *sumcol()* and *colSums()*?
 
-## Problem 2.
+## 2. Exercise
 
 #Using the setup from the lecture on *bigmemory* package for the large array *bm*,
 #compute the mean and standard deviation of each column for a matrix with a size
@@ -111,7 +111,7 @@ col.sd
 #disk.
 
 
-## Problem 3.
+## 3. Exercise
 
 #The two following *for loops* use a cutoff of 0.05 to assing the value **NA** to the vector
 #elements:

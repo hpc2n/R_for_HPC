@@ -15,7 +15,12 @@ We will use the *iris* database:
 
 ```{r}
 x <- iris[which(iris[,5] != "setosa"), c(1,5)]
-head(x)
+summary(x)
+```
+## Iris data set
+
+```{r}
+plot(x[,1],x[,2]) #plot of Species vs. sepal lengths
 ```
 
 ## Serial mode
@@ -92,8 +97,15 @@ stopCluster(cl)
 
 ## Is parallel processing always the best alternative?
 
-The message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.
+Only if the computational load (number of numerical operations) exceeds the
+overhead of using the parallel routines.
 
+Another message from these examples is that one always needs to check the
+performance of the code (Time) vs. the number of requested cores, to use an
+"optimal" number.
+
+These data can be useful upon applying for medium/large SNIC projects because the 
+reviewers would know if the requested hours are justified.
 
 ## References
 * https://swcarpentry.github.io/r-novice-inflammation/

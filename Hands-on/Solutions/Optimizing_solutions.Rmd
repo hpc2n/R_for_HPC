@@ -1,12 +1,12 @@
 ---
-title: "Exercises"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+title: "Solutions"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 date: "Feb., 2021"
 output: html_document
 ---
 
 
-## 1.
+## 1. Exercise
 
 In the previous module about Profiling we wrote a function for computing the sum of the elements of each column:
 
@@ -53,13 +53,18 @@ res2 <- sumcol_vec(A)
 toc()
 ```
 
-# 2.
+Did the vectorized code ran faster? Yes, speedup depends on the machine you are running.
 
-The function *sdcol* which computes the standard deviation of each column of a matrix A of size 10000x3 using for loops. This function has a strong C accent. 
+## 2. Exercise
 
-Compare the performance of this function with the counterpart *apply()* function for computing the standard deviation. 
+The function *sdcol* which computes the standard deviation of each column of a matrix A of size 
+10000x3 using for loops. This function has a strong C accent. 
 
-Finally, compare the performance of these two functions with the colSds() function from the *library(matrixStats)* package.
+Compare the performance of this function with the counterpart *apply()* function for computing 
+the standard deviation. 
+
+Finally, compare the performance of these two functions with the colSds() function from the 
+*library(matrixStats)* package.
 
 
 ```{r eval=TRUE}
@@ -113,7 +118,7 @@ Main message: if you have a compiled function available use it instead of writin
 
 
 
-# 3.
+## 3. Exercise
 
 Use the *Rcpp* package to write a C++ function that adds three float numbers:
 

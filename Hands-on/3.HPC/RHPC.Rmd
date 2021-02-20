@@ -1,15 +1,22 @@
 ---
 title: "Exercises"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 date: "Feb., 2021"
 output: html_document
 ---
+
+## 0. Exercise
+
+Modify the **job.sh** script in this folder by requesting 2 cores for running the
+**HelloWorld.R** example. Although this R script uses 1 core (serial code), sometimes
+it is useful to request more than 1. When do you think that this trick could be
+helpful?
 
 ## 1. Exercise
 
 Take a look at the code for the credit bank data set in the script **parallel.R** and also
 at the **job_parallel.sh** batch script. Set the number of cores you want to use in both
-scripts first to 1 and then increase the number up to 12 and get some timings. 
+scripts first to 1 and then increase the number up to 12 and get timings. 
 
 Upload the working folder to Kebnekaise and run the simulation. Monitor the timings for 
 the simulations. You may use the *job-usage* tool on Kebnekaise. Replace the *FIXME* 
@@ -35,19 +42,22 @@ toc()
 stopCluster(cl)
 ```
 
+* Prepare and R script with the corrected code above (*FIXME* strings). And then 
+modify the *job.sh* batch script to submit it to the SLURM queue. 
 
-
-* What are the timings when one goes from 1 core to 2 cores? Does the performance improve considerably upon increasing the number of cores? How could that be explained?
+* Obtain the timings for 1 core to 2 cores. Does the performance improve considerably 
+upon increasing the number of cores? How could that be explained? (**Hint: data
+duplication**)
 
 ## 3. Exercise
 
 * Obtain the timings of the *max.eig()* function, which computes the eigenvalues of a 
-matrix of *NxN*, by using a different number of cores and using the **foreach** function. *N* can go from 1 to 700. Replace *FIXME* strings:
+matrix of *NxN*, by using a different number of cores and using the **foreach** function. 
+*N* can go from 1 to 700. Replace *FIXME* strings:
 
 
-Note: If you have a PC with more than 1 core you can try the following code for the
-*doParallel* simulation, otherwise you can copy/paste this code into a file (called maybe script0.R)
-in your account on Kebnekaise. Then, use the *job.sh* batch script (with the proper modifications)
+You may copy/paste this code into a file (called maybe script0.R) in your account 
+on Kebnekaise. Then, use the *job.sh* batch script  (with the proper modifications) 
 to submit your job to the queue with *sbatch job.sh*:
 
 ```{r eval=TRUE}

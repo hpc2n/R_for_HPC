@@ -1,14 +1,14 @@
 ---
 title: "Solutions"
-author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski, Lars Viklund"
+author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
 date: "Feb., 2021"
 output: html_document
 ---
 
-## 1. 
+## 1. Exercise 
 
-Using the functions sumcol() and colSums() from the Profiling section to obtain a memory profiling summary using *Rprof*. Replace *FIXME* strings with the 
-appropriate R code.
+Using the functions sumcol() and colSums() from the Profiling section to obtain a memory 
+profiling summary using *Rprof*. Replace *FIXME* strings with the appropriate R code.
 
 ```{r eval=TRUE}
 
@@ -42,10 +42,9 @@ summaryRprof("Rprof-memb.out", memory="both")
 ```
 
 What is the total memory used by *sumcol()* and *colSums()*? Results vary slightly
-depending on your OS.
+depending on your architecture.
 
-
-## 2. 
+## 2. Exercise
 
 Using the setup from the lecture on *bigmemory* package for the large array *bm*,
 compute the mean and standard deviation of each column for a matrix with a size
@@ -60,7 +59,8 @@ bm <- big.matrix(1e7, 3, backingfile = "bm", backingpath = getwd())
 bm
 ```
 
-Now, work with chunks of data. Initialize the big matrix's columns with according to probability distributions:
+Now, work with chunks of data. Initialize the big matrix's columns with according to
+probability distributions:
 
 ```{r eval=TRUE}
 chunksize <- 1e6
@@ -111,9 +111,11 @@ Note: *bigmemory* package is used for larger matrices than in the present
 example. Here, I chose a small size for the matrix to avoid filling your 
 disk.
 
-## 3. 
 
-The two following *for loops* use a cutoff of 0.05 to assing the value **NA** to the vector elements:
+## 3. Exercise
+
+The two following *for loops* use a cutoff of 0.05 to assing the value **NA** to the vector
+elements:
 
 ```{r}
 library(tictoc)
@@ -135,7 +137,8 @@ x[which(x < 0.05)] <- NA
 toc()
 ```
 
-compare the execution times of both functions using vector sizes of 1e+06, 1e+07, and 1e+08. Which function showed the best performance?
+compare the execution times of both functions using vector sizes of 1e+06, 1e+07, and 1e+08. 
+Which function showed the best performance?
 
 The vectorized loop performs better for the vector sizes studied here.
 

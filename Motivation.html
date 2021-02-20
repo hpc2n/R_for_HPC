@@ -197,15 +197,21 @@ slide:not(.current) .plotly.html-widget{
 <p>We will use the <em>iris</em> database:</p>
 
 <pre class = 'prettyprint lang-r'>x &lt;- iris[which(iris[,5] != &quot;setosa&quot;), c(1,5)]
-head(x)</pre>
+summary(x)</pre>
 
-<pre >##    Sepal.Length    Species
-## 51          7.0 versicolor
-## 52          6.4 versicolor
-## 53          6.9 versicolor
-## 54          5.5 versicolor
-## 55          6.5 versicolor
-## 56          5.7 versicolor</pre>
+<pre >##   Sepal.Length         Species  
+##  Min.   :4.900   setosa    : 0  
+##  1st Qu.:5.800   versicolor:50  
+##  Median :6.300   virginica :50  
+##  Mean   :6.262                  
+##  3rd Qu.:6.700                  
+##  Max.   :7.900</pre>
+
+</article></slide><slide class=""><hgroup><h2>Iris data set</h2></hgroup><article  id="iris-data-set-1">
+
+<pre class = 'prettyprint lang-r'>plot(x[,1],x[,2]) #plot of Species vs. sepal lengths</pre>
+
+<p><img src="Motivation_files/figure-html/unnamed-chunk-2-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Serial mode</h2></hgroup><article  id="serial-mode">
 
@@ -228,7 +234,7 @@ stime &lt;- system.time({
 stime</pre>
 
 <pre >## elapsed 
-##   28.88</pre>
+##   23.64</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
 
@@ -246,7 +252,7 @@ ptime &lt;- system.time({
 ptime</pre>
 
 <pre >## elapsed 
-##   19.39</pre>
+##   17.25</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
@@ -254,7 +260,7 @@ ptime</pre>
 
 <p>a graphical view of the scaling behavior can be seen in the following plot:</p>
 
-<p><img src="Motivation_files/figure-html/unnamed-chunk-5-1.png" width="720" /></p>
+<p><img src="Motivation_files/figure-html/unnamed-chunk-6-1.png" width="720" /></p>
 
 </article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative">
 
@@ -263,7 +269,7 @@ ptime</pre>
 stime </pre>
 
 <pre >##    user  system elapsed 
-##    2.14    0.00    2.19</pre>
+##    1.98    0.00    2.00</pre>
 
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
@@ -272,13 +278,17 @@ ptime &lt;- system.time(
 ptime </pre>
 
 <pre >##    user  system elapsed 
-##    3.09    0.52    3.79</pre>
+##    2.79    0.30    3.42</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Is parallel processing always the best alternative?</h2></hgroup><article  id="is-parallel-processing-always-the-best-alternative-1">
 
-<p>The message from this simple calculation is that one always needs to check the performance of the code vs. the number of requested cores.</p>
+<p>Only if the computational load (number of numerical operations) exceeds the overhead of using the parallel routines.</p>
+
+<p>Another message from these examples is that one always needs to check the performance of the code (Time) vs. the number of requested cores, to use an &ldquo;optimal&rdquo; number.</p>
+
+<p>These data can be useful upon applying for medium/large SNIC projects because the reviewers would know if the requested hours are justified.</p>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references">
 
