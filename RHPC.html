@@ -209,46 +209,62 @@ slide:not(.current) .plotly.html-widget{
 
 <ul>
 <li><p>Implicit parallelism is included in some packages, one only needs to assign the number of workers (threads)</p></li>
-<li><p>Explicit parallelism requires the intervention of the user to write the proper parallelization instruction (Rmpi for instance)</p></li>
+<li><p>Explicit parallelism requires the intervention of the user to write the proper parallelization instruction (<strong>Rmpi</strong> for instance)</p></li>
 </ul>
+
+</article></slide><slide class=""><hgroup><h2>Data dependency</h2></hgroup><article  id="data-dependency">
+
+<p>This loop can be easily parallelized:</p>
+
+<pre class = 'prettyprint lang-r'>for(i in 1:100){
+    b[i] = 4
+    a[i] = 2*b[i] + 1    
+}</pre>
+
+<p>but this one cannot because it has dependency on the values of the <strong>b</strong> vector</p>
+
+<pre class = 'prettyprint lang-r'>for(i in 1:100){
+    b[i] = 4
+    a[i] = 2*b[i-1] + 1  
+}</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using R in HPC</h2></hgroup><article  id="using-r-in-hpc">
 
 <p>There are several versions of R installed on Kebnekaise</p>
 
-<pre class = 'prettyprint lang-r'>&gt;ml spider R
-     Versions:
-        R/3.3.1
-        R/3.4.4-X11-20180131
-        R/3.5.1-Python-2.7.15
-        R/3.5.1
-        R/3.6.0
-        R/3.6.2
-        R/4.0.0
+<pre class = 'prettyprint lang-r'>ml spider R
+#     Versions:
+#        R/3.3.1
+#        R/3.4.4-X11-20180131
+#        R/3.5.1-Python-2.7.15
+#        R/3.5.1
+#        R/3.6.0
+#        R/3.6.2
+#        R/4.0.0
         
-&gt;ml spider R/3.6.0   #search for the modules needed by R
-  You will need to load all module(s) on any one of the lines below before the &quot;R/3.6.0&quot; 
-      GCC/8.2.0-2.31.1  OpenMPI/3.1.3</pre>
+ml spider R/3.6.0   #search for the modules needed by R
+#  You will need to load all module(s) on any one of the lines below before the &quot;R/3.6.0&quot; 
+#      GCC/8.2.0-2.31.1  OpenMPI/3.1.3</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using R in HPC</h2></hgroup><article  id="using-r-in-hpc-1">
 
-<pre class = 'prettyprint lang-r'>&gt;R --help
+<pre class = 'prettyprint lang-r'>R --help
 
-Usage: R [options] [&lt; infile] [&gt; outfile]
-   or: R CMD command [arguments]
+#Usage: R [options] [&lt; infile] [&gt; outfile]
+#   or: R CMD command [arguments]
 
-Start R, a system for statistical computation and graphics, with the
-specified options, or invoke an R tool via the &#39;R CMD&#39; interface.
+#Start R, a system for statistical computation and graphics, with the
+#specified options, or invoke an R tool via the &#39;R CMD&#39; interface.
 
-Options:
-  -h, --help            Print short help message and exit
-  --version             Print version info and exit
-  --encoding=ENC        Specify encoding to be used for stdin
-  --encoding ENC
-  RHOME         Print path to R home directory and exit
-  --save                Do save workspace at the end of the session
-  --no-save             Don&#39;t save it
-  --no-environ          Don&#39;t read the site and user environment files</pre>
+#Options:
+#  -h, --help            Print short help message and exit
+#  --version             Print version info and exit
+#  --encoding=ENC        Specify encoding to be used for stdin
+#  --encoding ENC
+#  RHOME            Print path to R home directory and exit
+#  --save                Do save workspace at the end of the session
+#  --no-save             Don&#39;t save it
+#  --no-environ          Don&#39;t read the site and user environment files</pre>
 
 </article></slide><slide class=""><hgroup><h2>Adding your own packages in R</h2></hgroup><article  id="adding-your-own-packages-in-r">
 
@@ -399,7 +415,7 @@ stopCluster(cl)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-3">
 
-<p><strong>parallel</strong> package</p>
+<p>Send slices of data to the workers with the <strong>parallel</strong> package</p>
 
 <pre class = 'prettyprint lang-r'>library(parallel)  #using &quot;parallel&quot; package
 
@@ -414,6 +430,45 @@ cl &lt;- makeCluster(P)   #distribute the work across cores
 clusterExport(cl, &quot;mydata&quot;)
 res &lt;- clusterApply(cl, 1:N, fun = myfunc)
 stopCluster(cl)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-4">
+
+<p>The <strong>doParallel</strong> package is used in the following example to compute the eigenvalues of matrices growing in size:</p>
+
+<pre class = 'prettyprint lang-r'>library(doParallel)
+
+my_eigen &lt;- function(x) {
+  n &lt;- x*800
+  m &lt;- matrix(runif(n^2),n,n)
+  m[lower.tri(m)] = t(m)[lower.tri(m)]
+  d &lt;- diag(eigen(m)$values)
+}
+
+cl &lt;- makeCluster(4)
+registerDoParallel(cl)
+system.time( res1 &lt;- foreach(n = 1:6) %dopar% my_eigen(n) )[3]
+stopCluster(cl)
+#Elapsed
+#211.25</pre>
+
+</article></slide><slide class=""><hgroup><h2>Parallel packages: examples</h2></hgroup><article  id="parallel-packages-examples-5">
+
+<p>We can also use the <strong>future</strong> package in R which runs on several OS and supports asynchronous calculations:</p>
+
+<pre class = 'prettyprint lang-r'>library(future)
+plan(multisession, gc = TRUE, workers = 4)
+plan(multisession, workers = 4)
+par_future &lt;- function(x) {
+  #creating futures
+  ft &lt;- lapply( x, function(x) future(my_eigen(x)) )
+  #get futures
+  get_ft &lt;- lapply(ft, value)
+}
+
+x &lt;- 1:6
+system.time( res2 &lt;- par_future(x) )[3]
+#Elapsed
+#210.17</pre>
 
 </article></slide><slide class=""><hgroup><h2>Random Numbers in parallel simulations</h2></hgroup><article  id="random-numbers-in-parallel-simulations">
 
@@ -453,45 +508,47 @@ identical(res3,res4)</pre>
 
 <p>Memory profiling is crucial upon using parallel packages. Suppose we have a data frame <em>mydata</em> which will be processed with the <em>clusterApply</em> function</p>
 
-<pre class = 'prettyprint lang-r'>&gt;gcinfo(TRUE)   #activate gc 
-&gt;N &lt;- 5000000
-&gt;mydata &lt;- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
-...
-Garbage collection 23 = 14+2+7 (level 0) ... 
-43.5 Mbytes of cons cells used (66%)
-130.4 Mbytes of vectors used (65%)
-&gt;gc()
-           used  (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells   572516  30.6    1233268  65.9  1233268  65.9
-Vcells 16492769 125.9   26338917 201.0 19085502 145.7</pre>
+<pre class = 'prettyprint lang-r'>gcinfo(TRUE)   #activate gc 
+N &lt;- 5000000
+mydata &lt;- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
+#...
+#Garbage collection 23 = 14+2+7 (level 0) ... 
+#43.5 Mbytes of cons cells used (66%)
+#130.4 Mbytes of vectors used (65%)
+
+gc()
+#           used  (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells   572516  30.6    1233268  65.9  1233268  65.9
+#Vcells 16492769 125.9   26338917 201.0 19085502 145.7</pre>
 
 </article></slide><slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel-1">
 
 <p>Then, we use a function to partition the data frame by cores</p>
 
-<pre class = 'prettyprint lang-r'>&gt;library(parallel)  #using parallel package
-&gt;detectCores()
-&gt;P &lt;- detectCores(logical = FALSE)  #only physical cores
+<pre class = 'prettyprint lang-r'>library(parallel)  #using parallel package
+detectCores()
+P &lt;- detectCores(logical = FALSE)  #only physical cores
 
-&gt;myfunc &lt;- function(id) { #function to sum by rows
-&gt;  arguments &lt;- mydata[id, ]
-&gt;  arguments$one + arguments$two + arguments$three
-&gt;}</pre>
+myfunc &lt;- function(id) { #function to sum by rows
+  arguments &lt;- mydata[id, ]
+  arguments$one + arguments$two + arguments$three
+}</pre>
 
 </article></slide><slide class=""><hgroup><h2>Profiling Memory: gc (Parallel)</h2></hgroup><article  id="profiling-memory-gc-parallel-2">
 
-<pre class = 'prettyprint lang-r'>&gt;cl &lt;- makeCluster(P)   #distribute the work across cores
-&gt;clusterExport(cl, &quot;mydata&quot;)
-&gt;res &lt;- clusterApply(cl, 1:N, fun = myfunc)
-&gt;stopCluster(cl)
-...
-Garbage collection 1196 = 1128+50+18 (level 0) ... 
-312.5 Mbytes of cons cells used (60%)
-206.5 Mbytes of vectors used (59%)
-&gt; gc()
-           used  (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells  5850436 312.5    9776540 522.2  9776540 522.2
-Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
+<pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(P)   #distribute the work across cores
+clusterExport(cl, &quot;mydata&quot;)
+res &lt;- clusterApply(cl, 1:N, fun = myfunc)
+stopCluster(cl)
+#...
+#Garbage collection 1196 = 1128+50+18 (level 0) ... 
+#312.5 Mbytes of cons cells used (60%)
+#206.5 Mbytes of vectors used (59%)
+
+gc()
+#           used  (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells  5850436 312.5    9776540 522.2  9776540 522.2
+#Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 
 <p>the time to execute <strong>myfunc</strong> in parallel mode increases drastically.</p>
 
@@ -513,6 +570,16 @@ Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 
 <img width="750px" src='Images/job-usage.png' title=''/>
 
+</article></slide><slide class=""><hgroup><h2>Good practices</h2></hgroup><article  id="good-practices-2">
+
+<ul>
+<li>If you have any issue when using <em>R</em> (or any software) report the case by creating a support ticket at <em><a href='mailto:support@hpc2n.umu.se' title=''>support@hpc2n.umu.se</a></em> (HPC2N users).
+
+<ul>
+<li>It would help if you could provide a folder with the smallest example that shows the reported issue</li>
+</ul></li>
+</ul>
+
 </article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
 
 <ul>
@@ -532,6 +599,7 @@ Vcells 27062930 206.5   45804848 349.5 42982557 328.0</pre>
 <li><a href='http://adv-r.had.co.nz/memory.html' title=''>http://adv-r.had.co.nz/memory.html</a></li>
 <li><a href='https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution' title=''>https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution</a></li>
 <li><a href='https://rawgit.com/PPgp/useR2017public/master/tutorial.html' title=''>https://rawgit.com/PPgp/useR2017public/master/tutorial.html</a></li>
+<li><a href='https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html' title=''>https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html</a></li>
 </ul>
 
 <p><a href='index.html' title=''>Return to Index</a></p></article></slide>

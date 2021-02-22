@@ -20,56 +20,75 @@ Programs could be of different types:
 
 * Compute bound if they use mainly CPU power (more cores can help)
 
-* Memory bound if the bottlenecks are allocating memory, copying/duplicating objects (large 
-memory nodes on Kebnekaise)
+* Memory bound if the bottlenecks are allocating memory, copying/duplicating
+objects (large memory nodes on Kebnekaise)
 
 ## Parallelization levels
 
-* Implicit parallelism is included in some packages, one only needs to assign the number of workers (threads)
+* Implicit parallelism is included in some packages, one only needs to assign 
+the number of workers (threads)
 
-* Explicit parallelism requires the intervention of the user to write the proper parallelization 
-instruction (Rmpi for instance)
+* Explicit parallelism requires the intervention of the user to write the proper
+parallelization instruction (**Rmpi** for instance)
+
+## Data dependency
+
+This loop can be easily parallelized:
+```{r eval=FALSE}
+for(i in 1:100){
+    b[i] = 4
+    a[i] = 2*b[i] + 1    
+}
+```
+
+but this one cannot because it has dependency on the values of the **b** vector
+```{r eval=FALSE}
+for(i in 1:100){
+    b[i] = 4
+    a[i] = 2*b[i-1] + 1  
+}
+```
 
 ## Using R in HPC
 
 There are several versions of R installed on Kebnekaise
 
 ```{r eval=FALSE}
->ml spider R
-     Versions:
-        R/3.3.1
-        R/3.4.4-X11-20180131
-        R/3.5.1-Python-2.7.15
-        R/3.5.1
-        R/3.6.0
-        R/3.6.2
-        R/4.0.0
+ml spider R
+#     Versions:
+#        R/3.3.1
+#        R/3.4.4-X11-20180131
+#        R/3.5.1-Python-2.7.15
+#        R/3.5.1
+#        R/3.6.0
+#        R/3.6.2
+#        R/4.0.0
         
->ml spider R/3.6.0   #search for the modules needed by R
-  You will need to load all module(s) on any one of the lines below before the "R/3.6.0" 
-      GCC/8.2.0-2.31.1  OpenMPI/3.1.3
+ml spider R/3.6.0   #search for the modules needed by R
+#  You will need to load all module(s) on any one of the lines below before the "R/3.6.0" 
+#      GCC/8.2.0-2.31.1  OpenMPI/3.1.3
 ```
 
 ## Using R in HPC
 
 ```{r eval=FALSE}
->R --help
+R --help
 
-Usage: R [options] [< infile] [> outfile]
-   or: R CMD command [arguments]
+#Usage: R [options] [< infile] [> outfile]
+#   or: R CMD command [arguments]
 
-Start R, a system for statistical computation and graphics, with the
-specified options, or invoke an R tool via the 'R CMD' interface.
+#Start R, a system for statistical computation and graphics, with the
+#specified options, or invoke an R tool via the 'R CMD' interface.
 
-Options:
-  -h, --help            Print short help message and exit
-  --version             Print version info and exit
-  --encoding=ENC        Specify encoding to be used for stdin
-  --encoding ENC
-  RHOME			Print path to R home directory and exit
-  --save                Do save workspace at the end of the session
-  --no-save             Don't save it
-  --no-environ          Don't read the site and user environment files
+#Options:
+#  -h, --help            Print short help message and exit
+#  --version             Print version info and exit
+#  --encoding=ENC        Specify encoding to be used for stdin
+#  --encoding ENC
+#  RHOME			Print path to R home directory and exit
+#  --save                Do save workspace at the end of the session
+#  --no-save             Don't save it
+#  --no-environ          Don't read the site and user environment files
 ```
 
 
@@ -225,7 +244,7 @@ stopCluster(cl)
 
 ## Parallel packages: examples
 
-**parallel** package
+Send slices of data to the workers with the **parallel** package
 
 ```{r eval=FALSE}
 library(parallel)  #using "parallel" package
@@ -243,6 +262,50 @@ res <- clusterApply(cl, 1:N, fun = myfunc)
 stopCluster(cl)
 ```
 
+## Parallel packages: examples
+
+The **doParallel** package is used in the following example to compute the 
+eigenvalues of matrices growing in size:
+
+```{r eval=FALSE}
+library(doParallel)
+
+my_eigen <- function(x) {
+  n <- x*800
+  m <- matrix(runif(n^2),n,n)
+  m[lower.tri(m)] = t(m)[lower.tri(m)]
+  d <- diag(eigen(m)$values)
+}
+
+cl <- makeCluster(4)
+registerDoParallel(cl)
+system.time( res1 <- foreach(n = 1:6) %dopar% my_eigen(n) )[3]
+stopCluster(cl)
+#Elapsed
+#211.25
+```
+
+## Parallel packages: examples
+
+We can also use the **future** package in R which runs on several OS and supports
+asynchronous calculations:
+
+```{r eval=FALSE}
+library(future)
+plan(multisession, gc = TRUE, workers = 4)
+plan(multisession, workers = 4)
+par_future <- function(x) {
+  #creating futures
+  ft <- lapply( x, function(x) future(my_eigen(x)) )
+  #get futures
+  get_ft <- lapply(ft, value)
+}
+
+x <- 1:6
+system.time( res2 <- par_future(x) )[3]
+#Elapsed
+#210.17
+```
 
 
 ## Random Numbers in parallel simulations
@@ -284,48 +347,50 @@ identical(res3,res4)
 Memory profiling is crucial upon using parallel packages. Suppose we have a data frame *mydata* which will be processed with the *clusterApply* function
 
 ```{r eval=FALSE}
->gcinfo(TRUE)   #activate gc 
->N <- 5000000
->mydata <- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
-...
-Garbage collection 23 = 14+2+7 (level 0) ... 
-43.5 Mbytes of cons cells used (66%)
-130.4 Mbytes of vectors used (65%)
->gc()
-           used  (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells   572516  30.6    1233268  65.9  1233268  65.9
-Vcells 16492769 125.9   26338917 201.0 19085502 145.7
+gcinfo(TRUE)   #activate gc 
+N <- 5000000
+mydata <- data.frame(one=1.0*seq(N),two=2.0*seq(N),three = 3.0*seq(N))
+#...
+#Garbage collection 23 = 14+2+7 (level 0) ... 
+#43.5 Mbytes of cons cells used (66%)
+#130.4 Mbytes of vectors used (65%)
+
+gc()
+#           used  (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells   572516  30.6    1233268  65.9  1233268  65.9
+#Vcells 16492769 125.9   26338917 201.0 19085502 145.7
 ```
 
 ## Profiling Memory: gc (Parallel)
 Then, we use a function to partition the data frame by cores
 
 ```{r eval=FALSE}
->library(parallel)  #using parallel package
->detectCores()
->P <- detectCores(logical = FALSE)  #only physical cores
+library(parallel)  #using parallel package
+detectCores()
+P <- detectCores(logical = FALSE)  #only physical cores
 
->myfunc <- function(id) { #function to sum by rows
->  arguments <- mydata[id, ]
->  arguments$one + arguments$two + arguments$three
->}
+myfunc <- function(id) { #function to sum by rows
+  arguments <- mydata[id, ]
+  arguments$one + arguments$two + arguments$three
+}
 ```
 
 ## Profiling Memory: gc (Parallel)
 
 ```{r eval=FALSE}
->cl <- makeCluster(P)   #distribute the work across cores
->clusterExport(cl, "mydata")
->res <- clusterApply(cl, 1:N, fun = myfunc)
->stopCluster(cl)
-...
-Garbage collection 1196 = 1128+50+18 (level 0) ... 
-312.5 Mbytes of cons cells used (60%)
-206.5 Mbytes of vectors used (59%)
-> gc()
-           used  (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells  5850436 312.5    9776540 522.2  9776540 522.2
-Vcells 27062930 206.5   45804848 349.5 42982557 328.0
+cl <- makeCluster(P)   #distribute the work across cores
+clusterExport(cl, "mydata")
+res <- clusterApply(cl, 1:N, fun = myfunc)
+stopCluster(cl)
+#...
+#Garbage collection 1196 = 1128+50+18 (level 0) ... 
+#312.5 Mbytes of cons cells used (60%)
+#206.5 Mbytes of vectors used (59%)
+
+gc()
+#           used  (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells  5850436 312.5    9776540 522.2  9776540 522.2
+#Vcells 27062930 206.5   45804848 349.5 42982557 328.0
 ```
 
 the time to execute **myfunc** in parallel mode increases drastically.
@@ -347,16 +412,27 @@ Then copy and paste the URL on your local web browser.
 
 ![](Images/job-usage.png){width=750px}
 
+## Good practices
+
+* If you have any issue when using *R* (or any software) report the case by 
+creating a support ticket at *support@hpc2n.umu.se* (HPC2N users). 
+  - It would help if you could provide a folder with the smallest example that 
+  shows the reported issue 
+  
+
+
 ## Summary 
 
-* Login nodes and Rstudio should be used for lightweight tasks for other tasks use the SLURM batch 
-system **sbatch script**
+* Login nodes and Rstudio should be used for lightweight tasks for other tasks
+use the SLURM batch system **sbatch script**
 
 * Compute bound or memory bound programs
 
-* Some packages for instance the linear algebra ones include already implicit parallelism
+* Some packages for instance the linear algebra ones include already implicit
+parallelism
 
-* It is a good practice to get a profiling analysis (time vs. nr. cores) to request the optimal nr. of cores in your batch script
+* It is a good practice to get a profiling analysis (time vs. nr. cores) to 
+request the optimal nr. of cores in your batch script
 
 * Monitor the behavior of your batch job with **job-usage** tool
 
@@ -367,5 +443,6 @@ system **sbatch script**
 * http://adv-r.had.co.nz/memory.html
 * https://blogs.oracle.com/r/managing-memory-limits-and-configuring-exadata-for-embedded-r-execution
 * https://rawgit.com/PPgp/useR2017public/master/tutorial.html
+* https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html
 
 [Return to Index](index.html) 

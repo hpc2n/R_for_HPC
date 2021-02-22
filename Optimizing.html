@@ -219,7 +219,7 @@ system.time(
 )</pre>
 
 <pre >##    user  system elapsed 
-##    0.63    0.00    0.64</pre>
+##    0.59    0.00    0.71</pre>
 
 </article></slide><slide class=""><hgroup><h2>Vectorization</h2></hgroup><article  id="vectorization">
 
@@ -258,7 +258,7 @@ system.time({
   })</pre>
 
 <pre >##    user  system elapsed 
-##   11.37    0.07   11.86</pre>
+##   12.93    2.56   16.04</pre>
 
 </article></slide><slide class=""><hgroup><h2>Memory pre-allocation</h2></hgroup><article  id="memory-pre-allocation-1">
 
@@ -271,7 +271,7 @@ system.time({
 })</pre>
 
 <pre >##    user  system elapsed 
-##    0.59    0.00    0.59</pre>
+##    0.59    0.00    0.61</pre>
 
 <p>This example shows that pre-allocating memory reduces the execution time.</p>
 
@@ -283,7 +283,7 @@ dataf &lt;- data.frame(data1)
 system.time(data2 &lt;- rowSums(dataf))</pre>
 
 <pre >##    user  system elapsed 
-##    0.06    0.00    0.07</pre>
+##    0.05    0.02    0.06</pre>
 
 </article></slide><slide class=""><hgroup><h2>Using Data Frames with caution</h2></hgroup><article  id="using-data-frames-with-caution-1">
 
@@ -292,7 +292,7 @@ dim(data1) &lt;- c(1E4,1000)
 system.time(data1 &lt;- rowSums(data1))</pre>
 
 <pre >##    user  system elapsed 
-##    0.03    0.00    0.03</pre>
+##    0.03    0.00    0.04</pre>
 
 <p>Then, it is more efficient to use matrices upon doing numerical calculations rather than Data Frames.</p>
 
@@ -309,12 +309,12 @@ dim(data) &lt;- c(1E5,100)
 system.time(prcomp_data &lt;- prcomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    5.07    0.06    5.51</pre>
+##    4.75    0.09    4.92</pre>
 
 <pre class = 'prettyprint lang-r'>system.time(princomp_data &lt;- princomp(data))</pre>
 
 <pre >##    user  system elapsed 
-##    3.79    0.04    3.92</pre>
+##    3.48    0.06    3.56</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions">
 
@@ -352,11 +352,11 @@ bench &lt;- microbenchmark(sim(size), sim.comp0(size), sim.comp1(size), sim.comp
 
 <pre >## Unit: milliseconds
 ##             expr      min       lq     mean   median       uq      max neval
-##        sim(size) 288.3916 309.1012 324.8347 321.4591 334.9027 454.8761   100
-##  sim.comp0(size) 662.9154 692.6866 708.2976 701.6172 715.3366 874.7414   100
-##  sim.comp1(size) 388.8976 417.2184 435.1616 428.6377 440.8857 578.4811   100
-##  sim.comp2(size) 290.3713 306.9515 323.4036 316.5750 333.0115 438.4556   100
-##  sim.comp3(size) 289.2221 305.0284 322.8784 319.8797 332.2691 482.9384   100</pre>
+##        sim(size) 289.0639 310.6711 334.0092 325.2992 350.3995 584.4413   100
+##  sim.comp0(size) 643.2629 672.1938 704.6650 694.0802 719.8053 995.2541   100
+##  sim.comp1(size) 350.9031 404.3153 430.1508 423.3907 442.4201 626.6827   100
+##  sim.comp2(size) 286.7397 306.5958 331.0508 327.5294 344.2147 482.2403   100
+##  sim.comp3(size) 267.8635 310.8226 325.3850 319.3560 336.5403 532.5009   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Compiling your functions</h2></hgroup><article  id="compiling-your-functions-3">
 
@@ -379,7 +379,7 @@ bench</pre>
 
 <pre >## Unit: milliseconds
 ##       expr      min       lq     mean   median       uq      max neval
-##  sim(size) 283.2724 313.1306 343.0867 331.5696 349.0048 542.2593   100</pre>
+##  sim(size) 267.5245 303.0273 324.7926 321.7032 337.2002 537.5539   100</pre>
 
 </article></slide><slide class=""><hgroup><h2>Rcpp package</h2></hgroup><article  id="rcpp-package">
 
@@ -446,10 +446,10 @@ is.loaded(&quot;pifunc&quot;)
 bench &lt;- microbenchmark(sim(size), .Fortran(&quot;pifunc&quot;, n = as.integer(size)))
 bench
 
-Unit: milliseconds
-                        expr        min         lq       mean     median         uq 
-          sim(size) 229.596323 234.312380 240.501156 236.034249 238.871773 316.289453
- .Fortran(&quot;pifunc&quot;)   4.136534   4.155587   4.239279   4.188102   4.261413   5.747752</pre>
+#Unit: milliseconds
+#                        expr        min         lq       mean     median         uq 
+#          sim(size) 229.596323 234.312380 240.501156 236.034249 238.871773 316.289453
+# .Fortran(&quot;pifunc&quot;)   4.136534   4.155587   4.239279   4.188102   4.261413   5.747752</pre>
 
 <p>Vectorized code performance was ~10 ms.</p>
 
@@ -483,10 +483,10 @@ invisible(julia_call(&quot;sim&quot;, size))</pre>
 bench &lt;- microbenchmark(sim(size), julia_call(&quot;sim&quot;, size))
 bench
 
-Unit: microseconds
-                    expr        min         lq        mean     median         uq  
-               sim(size) 230284.183 237486.927 246621.8263 244825.215 250872.803
- julia_call(&quot;sim&quot;, size)    400.051    426.745    490.8316    496.087    542.283</pre>
+#Unit: microseconds
+#                    expr        min         lq        mean     median         uq  
+#               sim(size) 230284.183 237486.927 246621.8263 244825.215 250872.803
+# julia_call(&quot;sim&quot;, size)    400.051    426.745    490.8316    496.087    542.283</pre>
 
 </article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
 

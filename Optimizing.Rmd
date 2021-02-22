@@ -263,10 +263,10 @@ library(microbenchmark)
 bench <- microbenchmark(sim(size), .Fortran("pifunc", n = as.integer(size)))
 bench
 
-Unit: milliseconds
-                        expr        min         lq       mean     median         uq 
-          sim(size) 229.596323 234.312380 240.501156 236.034249 238.871773 316.289453
- .Fortran("pifunc")   4.136534   4.155587   4.239279   4.188102   4.261413   5.747752
+#Unit: milliseconds
+#                        expr        min         lq       mean     median         uq 
+#          sim(size) 229.596323 234.312380 240.501156 236.034249 238.871773 316.289453
+# .Fortran("pifunc")   4.136534   4.155587   4.239279   4.188102   4.261413   5.747752
 ```
 
 Vectorized code performance was ~10 ms.
@@ -304,10 +304,10 @@ library(microbenchmark)
 bench <- microbenchmark(sim(size), julia_call("sim", size))
 bench
 
-Unit: microseconds
-                    expr        min         lq        mean     median         uq  
-               sim(size) 230284.183 237486.927 246621.8263 244825.215 250872.803
- julia_call("sim", size)    400.051    426.745    490.8316    496.087    542.283
+#Unit: microseconds
+#                    expr        min         lq        mean     median         uq  
+#               sim(size) 230284.183 237486.927 246621.8263 244825.215 250872.803
+# julia_call("sim", size)    400.051    426.745    490.8316    496.087    542.283
 ```
 
 

@@ -48,19 +48,19 @@ notice that the memory usage reported is the accumulated memory.
 A better approach would be by using **gc()** function. **gc()** reports the memory usage at some specific point. Information for parts of the code can be reported with the flags **gcinfo()**: 
 
 ```{r eval=FALSE}
-> size <- 1000000
-> gc()
-          used (Mb) gc trigger (Mb) max used (Mb)
-Ncells  551156 29.5    1222600 65.3  1067006 57.0
-Vcells 1413536 10.8    8388608 64.0  1745827 13.4
+size <- 1000000
+gc()
+#          used (Mb) gc trigger (Mb) max used (Mb)
+#Ncells  551156 29.5    1222600 65.3  1067006 57.0
+#Vcells 1413536 10.8    8388608 64.0  1745827 13.4
 
-> gcinfo(TRUE)   #checking the memory usage during function execution
-> res <- siml(size)
-... ommited lines
-Garbage collection 59 = 49+3+7 (level 0) ... 
-563.6 Mbytes of cons cells used (79%)
-171.1 Mbytes of vectors used (76%)
-> gcinfo(FALSE)
+gcinfo(TRUE)   #checking the memory usage during function execution
+res <- siml(size)
+#... ommited lines
+#Garbage collection 59 = 49+3+7 (level 0) ... 
+#563.6 Mbytes of cons cells used (79%)
+#171.1 Mbytes of vectors used (76%)
+gcinfo(FALSE)
 ```
 ## Profiling Memory: gc
 
@@ -69,10 +69,10 @@ A better approach would be by using **gc()** function. **gc()** reports the memo
 Finally, a call to **gc()** will report the memory allocated for the outputs of the function **res <- siml()**:
 
 ```{r eval=FALSE}
-> gc()
-          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells  558900 29.9   10696839 571.3 11155454 595.8
-Vcells 2429818 18.6   23726023 181.1 29657289 226.3
+gc()
+#          used (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells  558900 29.9   10696839 571.3 11155454 595.8
+#Vcells 2429818 18.6   23726023 181.1 29657289 226.3
 ```
 
 ## Profiling Memory: gc
@@ -80,29 +80,31 @@ Vcells 2429818 18.6   23726023 181.1 29657289 226.3
 gc() can help us to find memory usage changes upon creating objects:
 
 ```{r eval=FALSE}
-> gc(reset=TRUE)
-          used (Mb) gc trigger (Mb) max used (Mb)
-Ncells  562188 30.1    1154511 61.7   562188 30.1
-Vcells 1425756 10.9    8388608 64.0  1425756 10.9
-> listp <- as.list(seq(10000000))
-> gc()
-           used  (Mb) gc trigger   (Mb) max used  (Mb)
-Ncells 10564701 564.3   22068058 1178.6 10567700 564.4
-Vcells 21431560 163.6   33209716  253.4 21441849 163.6
+gc(reset=TRUE)
+#          used (Mb) gc trigger (Mb) max used (Mb)
+#Ncells  562188 30.1    1154511 61.7   562188 30.1
+#Vcells 1425756 10.9    8388608 64.0  1425756 10.9
+
+listp <- as.list(seq(10000000))
+gc()
+#           used  (Mb) gc trigger   (Mb) max used  (Mb)
+#Ncells 10564701 564.3   22068058 1178.6 10567700 564.4
+#Vcells 21431560 163.6   33209716  253.4 21441849 163.6
 ```
 
 ## Profiling Memory: gc
 
 ```{r eval=FALSE}
-> rm(listp)
-> gc()
-          used (Mb) gc trigger  (Mb) max used  (Mb)
-Ncells  564859 30.2   17654447 942.9 10567700 564.4
-Vcells 1431905 11.0   26567773 202.7 21441849 163.6
-> gc(reset=TRUE)
-          used (Mb) gc trigger  (Mb) max used (Mb)
-Ncells  564869 30.2   14123558 754.3   564869 30.2
-Vcells 1431935 11.0   21254219 162.2  1431935 11.0   
+rm(listp)
+gc()
+#          used (Mb) gc trigger  (Mb) max used  (Mb)
+#Ncells  564859 30.2   17654447 942.9 10567700 564.4
+#Vcells 1431905 11.0   26567773 202.7 21441849 163.6
+
+gc(reset=TRUE)
+#          used (Mb) gc trigger  (Mb) max used (Mb)
+#Ncells  564869 30.2   14123558 754.3   564869 30.2
+#Vcells 1431935 11.0   21254219 162.2  1431935 11.0   
 ```
 
 
@@ -150,14 +152,19 @@ object_size(y)
 
 ## Profiling Memory: Pryr
 
-The *mem_change()* function helps you to figure out the size of an object
+The *mem_change()* function helps you to figure out the change in size upon
+creating an object:
 
-```{r eval=TRUE}
+```{r eval=FALSE}
 myf <- function() {
-  x<- 1:1e6
+  mem_change( A <- matrix(1.0, 5000, 5000) )
   10
 }
 mem_change( z <- myf() )
+# 1 kB
+
+mem_change( A <- matrix(1.0, 5000, 5000) )
+# 200 MB
 ```
 
 ## Profiling Memory: Lineprof
@@ -194,20 +201,16 @@ siml <- function(l) {
 prof <- lineprof(siml(1000000))
 prof
 
-Output: 
-     time   alloc release dups                                   ref
-1   0.009   5.624   0.000 1808 c("compiler:::tryCmpfun", "tryCatch")
-2   0.002   0.100   0.000  235                          character(0)
-3   0.520 556.091   5.220    2       c("as.list", "as.list.default")
-4   0.001   5.332   0.000    0                               "runif"
-5   0.001   5.253   0.000    0                          character(0)
-6   0.001   5.197   0.000    0                                    #6
-7   0.009  17.406  16.858    0                               "runif"
-8   0.001   8.230   0.000    0                          character(0)
-9   0.019  24.799  48.774    0                               "runif"
-10  0.001  11.420   0.000    0                          character(0)
-11  0.002   7.451   0.000    0                               "runif"
-...  
+#     time   alloc release dups                                   ref
+#1   0.009   5.624   0.000 1808 c("compiler:::tryCmpfun", "tryCatch")
+#2   0.002   0.100   0.000  235                          character(0)
+#3   0.520 556.091   5.220    2       c("as.list", "as.list.default")
+#4   0.001   5.332   0.000    0                               "runif"
+#5   0.001   5.253   0.000    0                          character(0)
+#6   0.001   5.197   0.000    0                                    #6
+#7   0.009  17.406  16.858    0                               "runif"
+#8   0.001   8.230   0.000    0                          character(0)
+#...  
 ```
 
 ## Dealing with big arrays
