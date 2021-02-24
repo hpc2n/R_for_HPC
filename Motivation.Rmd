@@ -17,6 +17,9 @@ We will use the *iris* database:
 x <- iris[which(iris[,5] != "setosa"), c(1,5)]
 summary(x)
 ```
+
+Example adapted from: https://unc-libraries-data.github.io/R-Open-Labs/Extras/Parallel/foreach.html
+
 ## Iris data set
 
 ```{r}
@@ -36,11 +39,10 @@ library(doParallel)
 Let's take a look at the performance of a logistic regression model in serial mode (1 core):
 
 ```{r}
-trials <- 10000
 stime <- system.time({
-    r <- foreach(icount(trials), .combine=cbind) %do% {
-        ind <- sample(100,100, replace=TRUE)
-        result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+    r <- foreach(1:10000, .combine=cbind) %do% {
+        train <- sample(100,100, replace=TRUE)
+        result1 <- glm(x[train,2]~x[train,1], family=binomial(logit))
         coefficients(result1)
     }
 })[3]
@@ -55,9 +57,9 @@ Now, look at the performance using 2 cores:
 cl <- makeCluster(2)
 registerDoParallel(cl)
 ptime <- system.time({
-    r <- foreach(icount(trials), .combine=cbind) %dopar% {
-        ind <- sample(100,100, replace=TRUE)
-        result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+    r <- foreach(1:10000, .combine=cbind) %dopar% {
+        train <- sample(100,100, replace=TRUE)
+        result1 <- glm(x[train,2]~x[train,1], family=binomial(logit))
         coefficients(result1)
     }
 })[3]
