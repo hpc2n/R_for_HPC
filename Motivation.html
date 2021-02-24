@@ -207,6 +207,8 @@ summary(x)</pre>
 ##  3rd Qu.:6.700                  
 ##  Max.   :7.900</pre>
 
+<p>Example adapted from: <a href='https://unc-libraries-data.github.io/R-Open-Labs/Extras/Parallel/foreach.html' title=''>https://unc-libraries-data.github.io/R-Open-Labs/Extras/Parallel/foreach.html</a></p>
+
 </article></slide><slide class=""><hgroup><h2>Iris data set</h2></hgroup><article  id="iris-data-set-1">
 
 <pre class = 'prettyprint lang-r'>plot(x[,1],x[,2]) #plot of Species vs. sepal lengths</pre>
@@ -223,18 +225,17 @@ summary(x)</pre>
 
 <p>Let’s take a look at the performance of a logistic regression model in serial mode (1 core):</p>
 
-<pre class = 'prettyprint lang-r'>trials &lt;- 10000
-stime &lt;- system.time({
-    r &lt;- foreach(icount(trials), .combine=cbind) %do% {
-        ind &lt;- sample(100,100, replace=TRUE)
-        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+<pre class = 'prettyprint lang-r'>stime &lt;- system.time({
+    r &lt;- foreach(1:10000, .combine=cbind) %do% {
+        train &lt;- sample(100,100, replace=TRUE)
+        result1 &lt;- glm(x[train,2]~x[train,1], family=binomial(logit))
         coefficients(result1)
     }
 })[3]
 stime</pre>
 
 <pre >## elapsed 
-##   23.81</pre>
+##   25.92</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
 
@@ -243,16 +244,16 @@ stime</pre>
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
 ptime &lt;- system.time({
-    r &lt;- foreach(icount(trials), .combine=cbind) %dopar% {
-        ind &lt;- sample(100,100, replace=TRUE)
-        result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+    r &lt;- foreach(1:10000, .combine=cbind) %dopar% {
+        train &lt;- sample(100,100, replace=TRUE)
+        result1 &lt;- glm(x[train,2]~x[train,1], family=binomial(logit))
         coefficients(result1)
     }
 })[3]
 ptime</pre>
 
 <pre >## elapsed 
-##   15.41</pre>
+##   16.25</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
@@ -269,7 +270,7 @@ ptime</pre>
 stime </pre>
 
 <pre >##    user  system elapsed 
-##    1.87    0.00    1.90</pre>
+##    1.86    0.00    1.86</pre>
 
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
@@ -278,7 +279,7 @@ ptime &lt;- system.time(
 ptime </pre>
 
 <pre >##    user  system elapsed 
-##    2.72    0.29    3.21</pre>
+##    2.84    0.33    3.36</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
