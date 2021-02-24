@@ -1,0 +1,168 @@
+#---
+#title: "Exercises"
+#author: "Pedro Ojeda, Birgitte Brydsö, Mirko Myllykoski"
+#date: "Feb., 2021"
+#output: html_document
+#---
+
+## 0. Exercise
+
+#Modify the **job.sh** script in this folder by requesting 2 cores for running the
+#**HelloWorld.R** example. Although this R script uses 1 core (serial code), sometimes
+#it is useful to request more than 1. When do you think that this trick could be
+#helpful?
+
+## 1. Exercise
+
+#Take a look at the code for the credit bank data set in the script **parallel.R** and also
+#at the **job_parallel.sh** batch script. Set the number of cores you want to use in both
+#scripts first to 1 and then increase the number up to 12 and get timings. 
+
+#Upload the working folder to Kebnekaise and run the simulation. Monitor the timings for 
+#the simulations. You may use the *job-usage* tool on Kebnekaise. Replace the *FIXME* 
+#strings with appropriate code.
+
+## 2. Exercise
+ 
+#* The following *foreach* loop divides each element in a row by the rows mean. 
+#Analyze the timings with *tictoc* for 1 and 2 cores:
+
+
+
+library(doParallel)
+library(tictoc)
+A <- matrix(1.0, 5000, 2000)
+cl <- makeCluster(*FIXME*)        
+registerDoParallel(cl)
+
+tic()
+res1 <- foreach(i=1:nrow(A), .combine='rbind') %dopar% (A[i,]/mean(A[i,])) 
+toc()
+
+stopCluster(cl)
+
+
+#* Prepare and R script with the corrected code above (*FIXME* strings). And then 
+#modify the *job.sh* batch script to submit it to the SLURM queue. 
+
+#* Obtain the timings for 1 core to 2 cores. Does the performance improve considerably 
+#upon increasing the number of cores? How could that be explained? (**Hint: data
+#duplication**)
+
+## 3. Exercise
+
+#* Obtain the timings of the *max.eig()* function, which computes the eigenvalues of a 
+#matrix of *NxN*, by using a different number of cores and using the **foreach** function. 
+#*N* can go from 1 to 700. Replace *FIXME* strings:
+
+
+#You may copy/paste this code into a file (called maybe script0.R) in your account 
+#on Kebnekaise. Then, use the *job.sh* batch script  (with the proper modifications) 
+#to submit your job to the queue with *sbatch job.sh*:
+
+
+library(doParallel)
+library(tictoc)
+
+#Adapted from: https://rstudio-pubs-static.s3.amazonaws.com/181635_8d565543c7ce4218b80345adaa11ea58.html
+max.eig <- function(N, sigma) {
+    d <- matrix(rnorm(N**2, sd = sigma), nrow = N)
+    E <- eigen(d)$values
+    abs(E)[[1]]
+}
+
+cl <- makeCluster(*FIXME*)
+registerDoParallel(cl)
+tic()
+res2 <- foreach(n = 1:700, .combine='rbind') %dopar% max.eig(n, 1)
+toc()
+stopCluster(cl)
+
+
+
+#* How is the performance of the **foreach** function with 1 core compared with that of the **sapply** function (N=700) alternative:
+
+
+tic()
+res3 <- sapply(1:700, function(n) {max.eig(n, 1)})
+toc()
+
+
+
+## 4. Exercise (Challenge)
+
+#This exercise was inspired by the Stackoverflow case 
+#(https://stackoverflow.com/questions/31575585/shared-memory-in-parallel-foreach-in-r)
+#where it was observed that memory increased when using **foreach** in parallel mode.
+#Prepare a R script with the following code which uses 2 cores (call the script
+#script1.R for instance):
+
+
+
+library(parallel)
+library(foreach)
+library(bigmemory)
+library(doParallel)
+
+#create a matrix of size 1GB aproximatelly
+c<-matrix(runif(10000^2),10000,10000)
+#convert it to bigmatrix
+x<-as.big.matrix(c)
+# get a description of the matrix
+mdesc <- describe(x)
+
+p <- detectCores(logical = FALSE) # only physical cores
+cl <- makeCluster(2)
+registerDoParallel(cl)
+clusterEvalQ(cl, library(bigmemory))
+out<-foreach(linID = 1:10, .combine=c) %dopar% {
+  m <- attach.big.matrix(mdesc)
+  #dummy expression to test data aquisition
+  Sys.sleep(190)
+  print(summary(m))
+}
+stopCluster(cl)
+
+
+#Now, use the **job.sh** template in this folder to submit your script to the queue.
+#Don't forget to replace the project name and the reservation queue. 
+#Use the job_ID (number you get when submitting the job with **sbatch job.sh**)
+#to get a URL with  the command **job-usage job_ID**. Copy/paste this URL to 
+#your local browser and wait ~5min. to see the statistics. Don't close your browser.
+
+#Repeat the process above and create a second R script (maybe called script2.R) with
+#the code below.
+
+
+library(parallel)
+library(foreach)
+library(bigmemory)
+library(doParallel)
+
+#create a matrix of size 1GB aproximatelly
+c<-matrix(runif(10000^2),10000,10000)
+#convert it to bigmatrix
+x<-as.big.matrix(c)
+# get a description of the matrix
+mdesc <- describe(x)
+
+p <- detectCores(logical = FALSE) # only physical cores
+cl <- makeCluster(2)
+registerDoParallel(cl)
+clusterEvalQ(cl, library(bigmemory))
+out<-foreach(linID = 1:10, .combine=c) %dopar% {
+  m <- attach.big.matrix(mdesc)
+  #dummy expression to test data aquisition
+  c[1,1] <- 0.3
+  Sys.sleep(190)
+  print(summary(m))
+}
+stopCluster(cl)
+
+
+#Modify the **job.sh** batch script, submit it to the queue. Then, get a URL
+#with **job-usage job_ID** tool and visualize the output in your local machine.
+
+#Compare the graphical outputs of both simulations (on your web browser).
+#What are the differences? What could be the source of that?
+
