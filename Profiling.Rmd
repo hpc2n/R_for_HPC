@@ -32,9 +32,10 @@ the ratio in parentheses is approximated with a Monte Carlo process throwing ran
 ![Surface ratio](Images/MC2.png){width=250px}
 
 + The R function to compute Pi is:
+Pi function adapted from: https://www.r-bloggers.com/2012/10/estimation-of-the-number-pi-a-monte-carlo-simulation/
 </div>
 
-<div style="float: right; width: 50%;">
+<div style="float: right; width: 40%;">
 ```{r}
 sim <- function(l) {
  c <- rep(0,l)
@@ -52,10 +53,11 @@ sim <- function(l) {
    pi_partial = dens*4
    c[i] = pi_partial
  }
- return(c)
-}
+ return(c) }
 ```
 </div>
+
+
 
 ## Pi calculation
 
@@ -243,6 +245,6 @@ in this case we obtain more statistics of the benchmarking process like the *mea
 * https://swcarpentry.github.io/r-novice-inflammation/
 * https://www.tutorialspoint.com/r/index.htm
 * R High Performance Programming. Aloysius, Lim; William, Tjhi. Packt Publishing, 2015.
-* [Pi calculation](https://www.r-bloggers.com/estimation-of-the-number-pi-a-monte-carlo-simulation/)
+* https://www.r-bloggers.com/estimation-of-the-number-pi-a-monte-carlo-simulation/
 
 [Return to Index](index.html)

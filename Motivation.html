@@ -235,7 +235,7 @@ summary(x)</pre>
 stime</pre>
 
 <pre >## elapsed 
-##   25.92</pre>
+##   22.24</pre>
 
 </article></slide><slide class=""><hgroup><h2>Parallel mode</h2></hgroup><article  id="parallel-mode">
 
@@ -253,7 +253,7 @@ ptime &lt;- system.time({
 ptime</pre>
 
 <pre >## elapsed 
-##   16.25</pre>
+##   16.11</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 
@@ -270,7 +270,7 @@ ptime</pre>
 stime </pre>
 
 <pre >##    user  system elapsed 
-##    1.86    0.00    1.86</pre>
+##    1.73    0.00    1.73</pre>
 
 <pre class = 'prettyprint lang-r'>cl &lt;- makeCluster(2)
 registerDoParallel(cl)
@@ -279,7 +279,7 @@ ptime &lt;- system.time(
 ptime </pre>
 
 <pre >##    user  system elapsed 
-##    2.84    0.33    3.36</pre>
+##    2.65    0.26    3.24</pre>
 
 <pre class = 'prettyprint lang-r'>stopCluster(cl)</pre>
 

@@ -220,75 +220,72 @@ Rprof(NULL)</pre>
 
 <pre >## $by.self
 ##                   self.time self.pct total.time total.pct mem.total
-## &quot;runif&quot;                3.12    54.17       3.12     54.17    1704.1
-## &quot;as.list.default&quot;      1.10    19.10       1.10     19.10     655.4
-## &quot;siml&quot;                 0.84    14.58       5.76    100.00    3586.4
-## &quot;pow2&quot;                 0.64    11.11       0.64     11.11     556.5
-## &quot;cb$code&quot;              0.02     0.35       0.02      0.35       2.3
-## &quot;cmpIndices&quot;           0.02     0.35       0.02      0.35       3.0
-## &quot;isBaseVar&quot;            0.02     0.35       0.02      0.35       0.0
+## &quot;runif&quot;                2.24    41.18       2.24     41.18    1703.2
+## &quot;as.list.default&quot;      1.46    26.84       1.46     26.84     680.0
+## &quot;siml&quot;                 1.10    20.22       5.44    100.00    3917.4
+## &quot;pow2&quot;                 0.60    11.03       0.60     11.03     576.3
+## &quot;findCenvVar&quot;          0.02     0.37       0.04      0.74       2.4
+## &quot;%in%&quot;                 0.02     0.37       0.02      0.37       2.4
 ## 
 ## $by.total
 ##                          total.time total.pct mem.total self.time self.pct
-## &quot;siml&quot;                         5.76    100.00    3586.4      0.84    14.58
-## &quot;block_exec&quot;                   5.76    100.00    3586.4      0.00     0.00
-## &quot;call_block&quot;                   5.76    100.00    3586.4      0.00     0.00
-## &quot;eval&quot;                         5.76    100.00    3586.4      0.00     0.00
-## &quot;evaluate&quot;                     5.76    100.00    3586.4      0.00     0.00
-## &quot;evaluate::evaluate&quot;           5.76    100.00    3586.4      0.00     0.00
-## &quot;evaluate_call&quot;                5.76    100.00    3586.4      0.00     0.00
-## &quot;FUN&quot;                          5.76    100.00    3586.4      0.00     0.00
-## &quot;generator$render&quot;             5.76    100.00    3586.4      0.00     0.00
-## &quot;handle&quot;                       5.76    100.00    3586.4      0.00     0.00
-## &quot;in_dir&quot;                       5.76    100.00    3586.4      0.00     0.00
-## &quot;knitr::knit&quot;                  5.76    100.00    3586.4      0.00     0.00
-## &quot;lapply&quot;                       5.76    100.00    3586.4      0.00     0.00
-## &quot;process_file&quot;                 5.76    100.00    3586.4      0.00     0.00
-## &quot;process_group&quot;                5.76    100.00    3586.4      0.00     0.00
-## &quot;process_group.block&quot;          5.76    100.00    3586.4      0.00     0.00
-## &quot;render&quot;                       5.76    100.00    3586.4      0.00     0.00
-## &quot;render_one&quot;                   5.76    100.00    3586.4      0.00     0.00
-## &quot;rmarkdown::render&quot;            5.76    100.00    3586.4      0.00     0.00
-## &quot;rmarkdown::render_site&quot;       5.76    100.00    3586.4      0.00     0.00
-## &quot;sapply&quot;                       5.76    100.00    3586.4      0.00     0.00
-## &quot;suppressMessages&quot;             5.76    100.00    3586.4      0.00     0.00
-## &quot;timing_fn&quot;                    5.76    100.00    3586.4      0.00     0.00
-## &quot;withCallingHandlers&quot;          5.76    100.00    3586.4      0.00     0.00
-## &quot;withVisible&quot;                  5.76    100.00    3586.4      0.00     0.00
-## &quot;runif&quot;                        3.12     54.17    1704.1      3.12    54.17
-## &quot;as.list.default&quot;              1.10     19.10     655.4      1.10    19.10
-## &quot;as.list&quot;                      1.10     19.10     655.4      0.00     0.00
-## &quot;pow2&quot;                         0.64     11.11     556.5      0.64    11.11
-## &quot;cmpfun&quot;                       0.06      1.04       5.3      0.00     0.00
-## &quot;compiler:::tryCmpfun&quot;         0.06      1.04       5.3      0.00     0.00
-## &quot;doTryCatch&quot;                   0.06      1.04       5.3      0.00     0.00
-## &quot;tryCatch&quot;                     0.06      1.04       5.3      0.00     0.00
-## &quot;tryCatchList&quot;                 0.06      1.04       5.3      0.00     0.00
-## &quot;tryCatchOne&quot;                  0.06      1.04       5.3      0.00     0.00
-## &quot;genCode&quot;                      0.04      0.69       5.3      0.00     0.00
-## &quot;cb$code&quot;                      0.02      0.35       2.3      0.02     0.35
-## &quot;cmpIndices&quot;                   0.02      0.35       3.0      0.02     0.35
-## &quot;isBaseVar&quot;                    0.02      0.35       0.0      0.02     0.35
-## &quot;cmp&quot;                          0.02      0.35       3.0      0.00     0.00
-## &quot;cmpCall&quot;                      0.02      0.35       3.0      0.00     0.00
-## &quot;cmpPrim1&quot;                     0.02      0.35       3.0      0.00     0.00
-## &quot;cmpPrim2&quot;                     0.02      0.35       3.0      0.00     0.00
-## &quot;cmpSubsetDispatch&quot;            0.02      0.35       3.0      0.00     0.00
-## &quot;cmpSymbolAssign&quot;              0.02      0.35       3.0      0.00     0.00
-## &quot;codeBufCode&quot;                  0.02      0.35       2.3      0.00     0.00
-## &quot;Filter&quot;                       0.02      0.35       0.0      0.00     0.00
-## &quot;findLocalsList&quot;               0.02      0.35       0.0      0.00     0.00
-## &quot;funEnv&quot;                       0.02      0.35       0.0      0.00     0.00
-## &quot;h&quot;                            0.02      0.35       3.0      0.00     0.00
-## &quot;make.functionContext&quot;         0.02      0.35       0.0      0.00     0.00
-## &quot;tryInline&quot;                    0.02      0.35       3.0      0.00     0.00
-## &quot;unlist&quot;                       0.02      0.35       0.0      0.00     0.00
+## &quot;siml&quot;                         5.44    100.00    3917.4      1.10    20.22
+## &quot;block_exec&quot;                   5.44    100.00    3917.4      0.00     0.00
+## &quot;call_block&quot;                   5.44    100.00    3917.4      0.00     0.00
+## &quot;eval&quot;                         5.44    100.00    3917.4      0.00     0.00
+## &quot;evaluate&quot;                     5.44    100.00    3917.4      0.00     0.00
+## &quot;evaluate::evaluate&quot;           5.44    100.00    3917.4      0.00     0.00
+## &quot;evaluate_call&quot;                5.44    100.00    3917.4      0.00     0.00
+## &quot;FUN&quot;                          5.44    100.00    3917.4      0.00     0.00
+## &quot;generator$render&quot;             5.44    100.00    3917.4      0.00     0.00
+## &quot;handle&quot;                       5.44    100.00    3917.4      0.00     0.00
+## &quot;in_dir&quot;                       5.44    100.00    3917.4      0.00     0.00
+## &quot;knitr::knit&quot;                  5.44    100.00    3917.4      0.00     0.00
+## &quot;lapply&quot;                       5.44    100.00    3917.4      0.00     0.00
+## &quot;process_file&quot;                 5.44    100.00    3917.4      0.00     0.00
+## &quot;process_group&quot;                5.44    100.00    3917.4      0.00     0.00
+## &quot;process_group.block&quot;          5.44    100.00    3917.4      0.00     0.00
+## &quot;render&quot;                       5.44    100.00    3917.4      0.00     0.00
+## &quot;render_one&quot;                   5.44    100.00    3917.4      0.00     0.00
+## &quot;rmarkdown::render&quot;            5.44    100.00    3917.4      0.00     0.00
+## &quot;rmarkdown::render_site&quot;       5.44    100.00    3917.4      0.00     0.00
+## &quot;sapply&quot;                       5.44    100.00    3917.4      0.00     0.00
+## &quot;suppressMessages&quot;             5.44    100.00    3917.4      0.00     0.00
+## &quot;timing_fn&quot;                    5.44    100.00    3917.4      0.00     0.00
+## &quot;withCallingHandlers&quot;          5.44    100.00    3917.4      0.00     0.00
+## &quot;withVisible&quot;                  5.44    100.00    3917.4      0.00     0.00
+## &quot;runif&quot;                        2.24     41.18    1703.2      2.24    41.18
+## &quot;as.list.default&quot;              1.46     26.84     680.0      1.46    26.84
+## &quot;as.list&quot;                      1.46     26.84     680.0      0.00     0.00
+## &quot;pow2&quot;                         0.60     11.03     576.3      0.60    11.03
+## &quot;findCenvVar&quot;                  0.04      0.74       2.4      0.02     0.37
+## &quot;cmp&quot;                          0.04      0.74       2.4      0.00     0.00
+## &quot;cmpCall&quot;                      0.04      0.74       2.4      0.00     0.00
+## &quot;cmpfun&quot;                       0.04      0.74       2.4      0.00     0.00
+## &quot;compiler:::tryCmpfun&quot;         0.04      0.74       2.4      0.00     0.00
+## &quot;doTryCatch&quot;                   0.04      0.74       2.4      0.00     0.00
+## &quot;genCode&quot;                      0.04      0.74       2.4      0.00     0.00
+## &quot;getInlineInfo&quot;                0.04      0.74       2.4      0.00     0.00
+## &quot;h&quot;                            0.04      0.74       2.4      0.00     0.00
+## &quot;tryCatch&quot;                     0.04      0.74       2.4      0.00     0.00
+## &quot;tryCatchList&quot;                 0.04      0.74       2.4      0.00     0.00
+## &quot;tryCatchOne&quot;                  0.04      0.74       2.4      0.00     0.00
+## &quot;tryInline&quot;                    0.04      0.74       2.4      0.00     0.00
+## &quot;%in%&quot;                         0.02      0.37       2.4      0.02     0.37
+## &quot;cmpForBody&quot;                   0.02      0.37       2.4      0.00     0.00
+## &quot;cmpPrim1&quot;                     0.02      0.37       0.0      0.00     0.00
+## &quot;cmpPrim2&quot;                     0.02      0.37       0.0      0.00     0.00
+## &quot;cmpSymbolAssign&quot;              0.02      0.37       0.0      0.00     0.00
+## &quot;constantFold&quot;                 0.02      0.37       2.4      0.00     0.00
+## &quot;constantFoldCall&quot;             0.02      0.37       2.4      0.00     0.00
+## &quot;getFoldFun&quot;                   0.02      0.37       2.4      0.00     0.00
+## &quot;isBaseVar&quot;                    0.02      0.37       2.4      0.00     0.00
 ## 
 ## $sample.interval
 ## [1] 0.02
 ## 
 ## $sampling.time
-## [1] 5.76</pre>
+## [1] 5.44</pre>
 
 <p>notice that the memory usage reported is the accumulated memory.</p>
 
